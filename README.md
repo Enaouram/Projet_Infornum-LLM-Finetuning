@@ -11,6 +11,16 @@ Exploring various techniques for fine-tuning lightweight language models on a cu
    - **Use Case 1:** Leveraging LLMs for code-related tasks, with a focus on debugging and error resolution.
    - **Use Case 2:** Fine-tuning LLM models specifically for the SAS programming language.
 
+## Team and Supervisor
+
+### Team Members:
+- **Ayman Moumen**: [Link to Github](https://github.com/Ayman2G)
+- **Marouane Maamar**: [Link to Github](https://github.com/Enaouram)
+- **Samer Lahoud**: [Link to Github](https://github.com/SameryLahoud)
+
+### Supervisor:
+- **Thomas Cosyn**: Supervisor from OnePoint
+
 ## Objectives
 
 The project aims to achieve the following objectives:
@@ -46,7 +56,7 @@ To effectively work on the project titled 'Fine-tuning d'un LLM sur un cas d'usa
 ## Notebooks
 
 ### Finetune_Mistral_Python
-
+[Link to the Notebook](https://github.com/Ayman2G/Projet_Infornum-LLM-FInetuning/blob/main/Notebooks/Finetune_Mistral_Python.ipynb)
 This notebook focuses on fine-tuning the Mistral 7B instruct lightweight language model for Python-related tasks. It includes the following steps:
 
 1. **Installation:** Installation of necessary libraries such as `torch`, `transformers`, `datasets`, `peft`, `bitsandbytes`, `trl`, and `wandb`.
@@ -64,7 +74,7 @@ This notebook focuses on fine-tuning the Mistral 7B instruct lightweight languag
 7. **Model Inference:** Performing inference using the base model on a sample prompt.
 
 # Fine-Tuning Mistral for Financial Data
-
+[Link to the Notebook](https://github.com/Ayman2G/Projet_Infornum-LLM-FInetuning/blob/main/Notebooks/finance_data_fine_tuning.ipynb)
 This notebook focuses on fine-tuning the Mistral language model for financial data-related tasks. It comprises the following steps:
 
 1. **Installation:** Installing necessary libraries and dependencies, including `bitsandbytes`, `transformers`, `peft`, and `datasets`.
@@ -82,7 +92,7 @@ This notebook focuses on fine-tuning the Mistral language model for financial da
 7. **Pushing to Hugging Face Model Hub:** Uploading the fine-tuned model and tokenizer to the Hugging Face Model Hub for sharing and deployment.
 
 # Fine-Tuning Llama-2 for OPL Language Tasks
-
+[Link to the Notebook](https://github.com/Ayman2G/Projet_Infornum-LLM-FInetuning/blob/enaouram/LlamaFineTuned_InfoNUM5.ipynb)
 This notebook focuses on fine-tuning the Llama-2 language model specifically for tasks related to the OPL (Optimizing Programming Language). Here's an overview of the key steps involved:
 
 1. **Installing Dependencies:** 
@@ -106,6 +116,7 @@ This notebook focuses on fine-tuning the Llama-2 language model specifically for
 This process enables the Llama-2 model to be tailored specifically for tasks related to the OPL programming language, enhancing its performance and effectiveness in such contexts.
 
 # MistralFineTuned_InfoNUM5
+[Link to the Notebook](https://github.com/Ayman2G/Projet_Infornum-LLM-FInetuning/blob/enaouram/MistralFineTuned_InfoNUM5.ipynb)
 This code fine-tunes the Mistral language model for tasks related to the OPL (Optimizing Programming Language).
 
 1. **Installing Dependencies**
@@ -115,7 +126,7 @@ This code fine-tunes the Mistral language model for tasks related to the OPL (Op
    - Configuration settings are specified, including the model name, dataset name, output directory, and number of training epochs.
 
 3. **Downloading the Base Model**
-   - The base Llama-2 model is downloaded and configured for fine-tuning. 4-bit quantization using BitsAndBytes is applied for optimization.
+   - The base Mistral model is downloaded and configured for fine-tuning. 4-bit quantization using BitsAndBytes is applied for optimization.
 
 4. **Running the Model**
    - The fine-tuned model is utilized for text generation tasks, such as writing programs in the OPL programming language.
