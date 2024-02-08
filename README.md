@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository contains code and resources for fine-tuning a Lightweight Language Model (LLM) for specific use cases. The primary objectives of this project are:
+This repository contains code and resources for fine-tuning a Lightweight Language Model (LLM) for specific use cases for OnePoint. The primary objectives of this project are:
 
 ### 1. Fine-tuning of an LLM on a specific dataset:
 Exploring various techniques for fine-tuning lightweight language models on a custom dataset and evaluating their performance.
@@ -20,6 +20,9 @@ Exploring various techniques for fine-tuning lightweight language models on a cu
 
 ### Supervisor:
 - **Thomas Cosyn**: Supervisor from OnePoint
+
+## About OnePoint
+OnePoint is a French company founded in 2002 by David Layani, specializing in digital transformation for businesses and organizations. With a presence in 16 offices across the world in 2023, OnePoint boasts a workforce of approximately 3300 employees and a turnover of 500 million euros. Embracing telecommuting since 2011, OnePoint is committed to innovation, digitalization, and simplifying traditional hierarchical structures in favor of agile and collaborative work environments.
 
 ## Objectives
 
