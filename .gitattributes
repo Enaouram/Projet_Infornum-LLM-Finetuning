@@ -1,3 +1,4 @@
 C:/Users/Maamar/Desktop/Projet_Infornum-LLM-Finetuning/SAS_Data_Preps/df_annotated_finalbatch.parquet filter=lfs diff=lfs merge=lfs -text
 C:/Users/Maamar/Desktop/Projet_Infornum-LLM-Finetuning/SAS_Data_Preps/df_annotated_cleaned.parquet filter=lfs diff=lfs merge=lfs -text
 C:/Users/Maamar/Desktop/Projet_Infornum-LLM-Finetuning/SAS_Data_Preps/formatted_instructions.jsonl filter=lfs diff=lfs merge=lfs -text
+.jsonl filter=lfs diff=lfs merge=lfs -text
