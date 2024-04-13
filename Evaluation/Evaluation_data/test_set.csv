@@ -1,0 +1,3003 @@
+question,answer
+"I'm working on a simple script that involves CAS, jspring security check, redirection, etc.  I would like to use Kenneth Reitz's python requests because it's a great piece of work!  However, CAS requires getting validated via SSL so I have to get past that step first.  I don't know what Python requests is wanting?  Where is this SSL certificate suppose to reside?
+Traceback (most recent call last):
+  File ""./test.py"", line 24, in <module>
+  response = requests.get(url1, headers=headers)
+  File ""build/bdist.linux-x86_64/egg/requests/api.py"", line 52, in get
+  File ""build/bdist.linux-x86_64/egg/requests/api.py"", line 40, in request
+  File ""build/bdist.linux-x86_64/egg/requests/sessions.py"", line 209, in request 
+  File ""build/bdist.linux-x86_64/egg/requests/models.py"", line 624, in send
+  File ""build/bdist.linux-x86_64/egg/requests/models.py"", line 300, in _build_response
+  File ""build/bdist.linux-x86_64/egg/requests/models.py"", line 611, in send
+requests.exceptions.SSLError: [Errno 1] _ssl.c:503: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed
+
+","From requests documentation on SSL verification:
+
+Requests can verify SSL certificates for HTTPS requests, just like a web browser. To check a hostâs SSL certificate, you can use the verify argument:
+
+>>> requests.get('https://kennethreitz.com', verify=True)
+
+If you don't want to verify your SSL certificate, make verify=False 
+"
+"I'm looking for a library in Python which will provide at and cron like functionality.
+I'd quite like have a pure Python solution, rather than relying on tools installed on the box; this way I run on machines with no cron.
+For those unfamiliar with cron: you can schedule tasks based upon an expression like: 
+ 0 2 * * 7 /usr/bin/run-backup # run the backups at 0200 on Every Sunday
+ 0 9-17/2 * * 1-5 /usr/bin/purge-temps # run the purge temps command, every 2 hours between 9am and 5pm on Mondays to Fridays.
+
+The cron time expression syntax is less important, but I would like to have something with this sort of flexibility. 
+If there isn't something that does this for me out-the-box, any suggestions for the building blocks to make something like this would be gratefully received.
+Edit
+I'm not interested in launching processes, just ""jobs"" also written in Python - python functions. By necessity I think this would be a different thread, but not in a different process.
+To this end, I'm looking for the expressivity of the cron time expression, but in Python. 
+Cron has been around for years, but I'm trying to be as portable as possible. I cannot rely on its presence.
+","maybe this has come up only after the question was asked; I thought I just mention it for completeness sake: https://apscheduler.readthedocs.org/en/latest/
+"
+"How do I have a Python script that can accept user input (assuming this is possible) and how do I make it read in arguments if run from the command line?
+","raw_input is no longer available in Python 3.x.  But raw_input was renamed input, so the same functionality exists.
+input_var = input(""Enter something: "")
+print (""you entered "" + input_var) 
+
+Documentation of the change
+"
+"Two options in setup.py develop and install are confusing me. According to this site, using develop creates a special link to site-packages directory.
+People have suggested that I use python setup.py install for a fresh installation and python setup.py develop after any changes have been made to the setup file.
+Can anyone shed some light on the usage of these commands?
+","From the documentation. The develop will not install the package but it will create a .egg-link in the deployment directory back to the project source code directory. 
+So it's like installing but instead of copying to the site-packages it adds a symbolic link (the .egg-link acts as a multiplatform symbolic link). 
+That way you can edit the source code and see the changes directly without having to reinstall every time that you make a little change. This is useful when you are the developer of that project hence the name develop. If you are just installing someone else's package you should use install
+"
+"How do I concatenate two lists in Python?
+Example:
+listone = [1, 2, 3]
+listtwo = [4, 5, 6]
+
+Expected outcome:
+joinedlist == [1, 2, 3, 4, 5, 6]
+
+","If you don't want to or can't use the plus operator (+), you can uses the  __add__ function:
+listone = [1,2,3]
+listtwo = [4,5,6]
+
+result = list.__add__(listone, listtwo)
+print(result)
+
+>>> [1, 2, 3, 4, 5, 6]
+
+"
+"How do you convert a Unicode string (containing extra characters like Â£ $, etc.) into a Python string?
+",">>> text=u'abcd'
+>>> str(text)
+'abcd'
+
+If a simple conversion.
+"
+"Is it possible to add a key to a Python dictionary after it has been created? It doesn't seem to have an .add() method.
+","I feel like consolidating info about Python dictionaries:
+### Making a dictionary ###
+
+data = {}
+# OR
+data = dict()
+
+### Initially adding values ###
+
+data = {'a':1,'b':2,'c':3}
+# OR
+data = dict(a=1, b=2, c=3)
+
+### Inserting/Updating value ###
+
+data['a']=1  # updates if 'a' exists, else adds 'a'
+# OR
+data.update({'a':1})
+# OR
+data.update(dict(a=1))
+# OR
+data.update(a=1)
+
+### Merging 2 dictionaries ###
+
+data.update(data2)  # Where data2 is also a dict.
+
+### Deleting items in dictionary ###
+
+del data[key] #Remove specific element in a dictionary
+data.pop(key) #Removes the key & returns the value
+data.clear() #Clear entire dictionary
+
+Feel free to add more!
+"
+"I have a list with 15 numbers in, and I need to write some code that produces all 32,768 combinations of those numbers. 
+I've found some code (by googling) that apparently does what I'm looking for, but I found the code fairly opaque and am wary of using it. Plus I have a feeling there must be a more elegant solution.
+The only thing that occurs to me would be to just loop through the decimal integers 1-32768 and convert those to binary, and use the binary representation as a filter to pick out the appropriate numbers. 
+Does anyone know of a better way? Using map(), maybe?
+","This one-liner gives you all the combinations (between 0 and n items if the original list/set contains n distinct elements) and uses the native method itertools.combinations:
+from itertools import combinations
+
+input = ['a', 'b', 'c', 'd']
+
+output = sum([map(list, combinations(input, i)) for i in range(len(input) + 1)], [])
+
+
+The output will be:
+[[],
+ ['a'],
+ ['b'],
+ ['c'],
+ ['d'],
+ ['a', 'b'],
+ ['a', 'c'],
+ ['a', 'd'],
+ ['b', 'c'],
+ ['b', 'd'],
+ ['c', 'd'],
+ ['a', 'b', 'c'],
+ ['a', 'b', 'd'],
+ ['a', 'c', 'd'],
+ ['b', 'c', 'd'],
+ ['a', 'b', 'c', 'd']]
+
+
+Try it online:
+http://ideone.com/COghfX
+"
+"I spent most of the day yesterday searching for a clear answer for installing pip. I can't find a good solution. 
+Can somebody help me install it?
+","Download python setup tools from the below website:
+https://pypi.python.org/pypi/setuptools
+Use the tar file.
+Once you download, go to the downloaded folder and run 
+python setup.py install
+
+Once you do that,you will have easy_install.
+Use the below then to install pip:
+sudo easy_install pip
+
+"
+"Is it possible to terminate a running thread without setting/checking any flags/semaphores/etc.?
+","      from ctypes import *
+      pthread = cdll.LoadLibrary(""libpthread-2.15.so"")
+      pthread.pthread_cancel(c_ulong(t.ident))
+
+t is your Thread object.
+Read the python source (Modules/threadmodule.c and Python/thread_pthread.h) you can see the Thread.ident is an pthread_t type, so you can do anything pthread can do in python use libpthread.
+"
+"Since Python's string can't be changed, I was wondering how to concatenate a string more efficiently?
+I can write like it:
+s += stringfromelsewhere
+
+or like this:
+s = []
+s.append(somestring)
+
+later
+
+s = ''.join(s)
+
+While writing this question, I found a good article talking about the topic.
+http://www.skymind.com/~ocrow/python_string/
+But it's in Python 2.x., so the question would be did something change in Python 3?
+","The recommended method is still to use append and join.
+"
+"I've been hearing a lot about the PyPy project. They claim it is 6.3 times faster than the CPython interpreter on their site.
+Whenever we talk about dynamic languages like Python, speed is one of the top issues. To solve this, they say PyPy is 6.3 times faster.
+The second issue is parallelism, the infamous Global Interpreter Lock (GIL). For this, PyPy says it can give GIL-less Python.
+If PyPy can solve these great challenges, what are its weaknesses that are preventing wider adoption? That is to say, what's preventing someone like me, a typical Python developer, from switching to PyPy right now? 
+","That site does not claim PyPy is 6.3 times faster than CPython. To quote:
+
+The geometric average of all benchmarks is 0.16 or 6.3 times faster than CPython
+
+This is a very different statement to the blanket statement you made, and when you understand the difference, you'll understand at least one set of reasons why you can't just say ""use PyPy"". It might sound like I'm nit-picking, but understanding why these two statements are totally different is vital.
+To break that down:
+
+The statement they make only applies to the benchmarks they've used. It says absolutely nothing about your program (unless your program is exactly the same as one of their benchmarks).
+The statement is about an average of a group of benchmarks. There is no claim that running PyPy will give a 6.3 times improvement even for the programs they have tested.
+There is no claim that PyPy will even run all the programs that CPython runs at all, let alone faster.
+
+"
+"How do I delete a file or folder in Python?
+I am using the Python scripting language running on the Windows XP operating system.
+","Use 
+shutil.rmtree(path[, ignore_errors[, onerror]])
+
+(see complete doc on shutil) and/or
+os.remove
+
+and
+os.rmdir
+
+(complete doc on os)
+"
+"What is the Python equivalent of Perl's chomp function, which removes the last character of a value?
+","Careful with ""foo"".rstrip(os.linesep): That will only chomp the newline characters for the platform where your Python is being executed. Imagine you're chimping the lines of a Windows file under Linux, for instance:
+$ python
+Python 2.7.1 (r271:86832, Mar 18 2011, 09:09:48) 
+[GCC 4.5.0 20100604 [gcc-4_5-branch revision 160292]] on linux2
+Type ""help"", ""copyright"", ""credits"" or ""license"" for more information.
+>>> import os, sys
+>>> sys.platform
+'linux2'
+>>> ""foo\r\n"".rstrip(os.linesep)
+'foo\r'
+>>>
+
+Use ""foo"".rstrip(""\r\n"") instead, as Mike says above.
+"
+"When we add a database field in django we generally write models.CharField(max_length=100, null=True, blank=True). The same is done with ForeignKey, DecimalField etc. What is the basic difference in having 
+
+null=True only
+blank=True only
+null=True, blank=True
+
+in respect to different (CharField, ForeignKey, ManyToManyField, DateTimeField) fields. What are the advantages/disadvantages of using 1/2/3?
+","null=True sets NULL (versus NOT NULL) on the column in your DB. Blank values for Django field types such as DateTimeField or ForeignKey will be stored as NULL in the DB.
+blank=True determines whether the field will be required in forms. This includes the admin and your own custom forms. If blank=True then the field will not be required, whereas if it's False the field cannot be blank.
+The combo of the two is so frequent because typically if you're going to allow a field to be blank in your form, you're going to also need your database to allow NULL values for that field. The exception is CharFields and TextFields, which in Django are never saved as NULL. Blank values are stored in the DB as an empty string ('').
+A few examples:
+models.DateTimeField(blank=True) # raises IntegrityError if blank
+
+models.DateTimeField(null=True) # NULL allowed, but must be filled out in a form
+
+Obviously those two options don't make logical sense to use (though, there might be a use case for null=True, blank=False if you want a field to always be required in forms, but optional when dealing with an object through something like the shell.)
+models.CharField(blank=True) # No problem, blank is stored as ''
+
+models.CharField(null=True) # NULL allowed, but will never be set as NULL
+
+CHAR and TEXT types are never saved as NULL by Django, so null=True is unnecessary. However, you can manually set one of these fields to None to force set it as NULL. If you have a scenario where that might be necessary, you should still include null=True.
+"
+"I want to write a function that will execute a shell command and return its output as a string, no matter, is it an error or success message. I just want to get the same result that I would have gotten with the command line.
+What would be a code example that would do such a thing?
+For example:
+def run_command(cmd):
+    # ??????
+
+print run_command('mysqladmin create test -uroot -pmysqladmin12')
+# Should output something like:
+# mysqladmin: CREATE DATABASE failed; error: 'Can't create database 'test'; database exists'
+
+","Something like that:
+def runProcess(exe):    
+    p = subprocess.Popen(exe, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    while(True):
+      retcode = p.poll() #returns None while subprocess is running
+      line = p.stdout.readline()
+      yield line
+      if(retcode is not None):
+        break
+
+Note, that I'm redirecting stderr to stdout, it might not be exactly what you want, but I want error messages also.
+This function yields line by line as they come (normally you'd have to wait for subprocess to finish to get the output as a whole).
+For your case the usage would be:
+for line in runProcess('mysqladmin create test -uroot -pmysqladmin12'.split()):
+    print line,
+
+"
+"How do I check whether a file exists, without using the try statement?
+","In Python 3.4 the language provides a new module to manage files:
+import pathlib
+path = pathlib.Path('path/to/file')
+if path.is_file(): # if you want to check a directory: path.is_dir()
+    # if it is true, return true on your code
+
+"
+"How do I check whether a file exists, without using the try statement?
+","You can use following open method to check if file exists + readable
+open(inputFile, 'r')
+
+"
+"How can I output colored text to the terminal, in Python?
+What is the best Unicode symbol to represent a solid block?
+","Stupidly simple based on @joeld's answer
+class PrintInColor:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    LIGHT_PURPLE = '\033[94m'
+    PURPLE = '\033[95m'
+    END = '\033[0m'
+
+    @classmethod
+    def red(cls, s, **kwargs):
+        print(cls.RED + s + cls.END, **kwargs)
+
+    @classmethod
+    def green(cls, s, **kwargs):
+        print(cls.GREEN + s + cls.END, **kwargs)
+
+    @classmethod
+    def yellow(cls, s, **kwargs):
+        print(cls.YELLOW + s + cls.END, **kwargs)
+
+    @classmethod
+    def lightPurple(cls, s, **kwargs):
+        print(cls.LIGHT_PURPLE + s + cls.END, **kwargs)
+
+    @classmethod
+    def purple(cls, s, **kwargs):
+        print(cls.PURPLE + s + cls.END, **kwargs)
+
+Then just
+PrintInColor.red('hello', end=' ')
+PrintInColor.green('world')
+
+"
+"How can I convert the str representation of a dict, such as the following string, into a dict?
+s = ""{'muffin' : 'lolz', 'foo' : 'kitty'}""
+
+I prefer not to use eval. What else can I use?
+The main reason for this, is one of my coworkers classes he wrote, converts all input into strings. I'm not in the mood to go and modify his classes, to deal with this issue.
+","http://docs.python.org/2/library/json.html
+JSON can solve this problem though its decoder wants double quotes around keys and values.  If you don't mind a replace hack...
+import json
+s = ""{'muffin' : 'lolz', 'foo' : 'kitty'}""
+json_acceptable_string = s.replace(""'"", ""\"""")
+d = json.loads(json_acceptable_string)
+# d = {u'muffin': u'lolz', u'foo': u'kitty'}
+
+NOTE that if you have single quotes as a part of your keys or values this will fail due to improper character replacement. This solution is only recommended if you have a strong aversion to the eval solution.
+More about json single quote: jQuery single quote in JSON response
+"
+"So, I started learning to code in Python and later Django. The first times it was hard looking at tracebacks and actually figure out what I did wrong and where the syntax error was. Some time has passed now and some way along the way, I guess I got a routine in debugging my Django code. As this was done early in my coding experience, I sat down and wondered if how I was doing this was ineffective and could be done faster. I usually manage to find and correct the bugs in my code, but I wonder if I should be doing it faster?
+I usually just use the debug info Django gives when enabled. When things do end up as I thought it would, I break the code flow a lot with a syntax error, and look at the variables at that point in the flow to figure out, where the code does something other than what I wanted.
+But can this be improved? Are there some good tools or better ways to debug your Django code?
+","From my perspective, we could break down common code debugging tasks into three distinct usage patterns:
+
+Something has raised an exception: runserver_plus' Werkzeug debugger to the rescue. The ability to run custom code at all the trace levels is a killer. And if you're completely stuck, you can create a Gist to share with just a click.
+Page is rendered, but the result is wrong: again, Werkzeug rocks. To make a breakpoint in code, just type assert False in the place you want to stop at.
+Code works wrong, but the quick look doesn't help. Most probably, an algorithmic problem. Sigh. Then I usually fire up a console debugger PuDB: import pudb; pudb.set_trace(). The main advantage over [i]pdb is that PuDB (while looking as you're in 80's) makes setting custom watch expressions a breeze. And debugging a bunch of nested loops is much simpler with a GUI.
+
+Ah, yes, the templates' woes. The most common (to me and my colleagues) problem is a wrong context: either you don't have a variable, or your variable doesn't have some attribute. If you're using debug toolbar, just inspect the context at the ""Templates"" section, or, if it's not sufficient, set a break in your views' code just after your context is filled up.
+So it goes.
+"
+"I need a way to get a dictionary value if its key exists, or simply return None, if it does not.
+However, Python returns a key_error if you search for a key that does not exist. I know that I can check for the key, but I am looking for something more explicit. Is there a way to just return None if the key does not exist ?
+","If you want a more transparent solution, you can subclass dict to get this behavior:
+class NoneDict(dict):
+    def __getitem__(self, key):
+        return dict.get(self, key)
+
+>>> foo = NoneDict([(1,""asdf""), (2,""qwerty"")])
+>>> foo[1]
+'asdf'
+>>> foo[2]
+'qwerty'
+>>> foo[3] is None
+True
+
+"
+"I recently came across the pandas library for python, which according to this benchmark performs very fast in-memory merges.  It's even faster than the data.table package in R (my language of choice for analysis).
+Why is pandas so much faster than data.table?  Is it because of an inherent speed advantage python has over R, or is there some tradeoff I'm not aware of?  Is there a way to perform inner and outer joins in data.table without resorting to merge(X, Y, all=FALSE) and merge(X, Y, all=TRUE)?
+
+Here's the R code and the Python code used to benchmark the various packages.
+","It looks like Wes may have discovered a known issue in data.table when the number of unique strings (levels) is large: 10,000.
+Does Rprof() reveal most of the time spent in the call sortedmatch(levels(i[[lc]]), levels(x[[rc]])?  This isn't really the join itself (the algorithm), but a preliminary step.
+Recent efforts have gone into allowing character columns in keys, which should resolve that issue by integrating more closely with R's own global string hash table. Some benchmark results are already reported by test.data.table() but that code isn't hooked up yet to replace the levels to levels match.
+Are pandas merges faster than data.table for regular integer columns?  That should be a way to isolate the algorithm itself vs factor issues.
+Also, data.table has time series merge in mind. Two aspects to that: i) multi column ordered keys such as (id,datetime) ii) fast prevailing join (roll=TRUE) a.k.a. last observation carried forward.
+I'll need some time to confirm as it's the first I've seen of the comparison to data.table as presented.
+
+UPDATE from data.table v1.8.0 released July 2012
+
+Internal function sortedmatch() removed and replaced with chmatch()
+       when matching i levels to x levels for columns of type 'factor'. This
+       preliminary step was causing a (known) significant slowdown when the number
+       of levels of a factor column was large (e.g. >10,000). Exacerbated in
+       tests of joining four such columns, as demonstrated by Wes McKinney
+       (author of Python package Pandas). Matching 1 million strings of which
+       of which 600,000 are unique is now reduced from 16s to 0.5s, for example.
+
+also in that release was :
+
+character columns are now allowed in keys and are preferred to
+factor. data.table() and setkey() no longer coerce character to
+factor. Factors are still supported. Implements FR#1493, FR#1224
+and (partially) FR#951.
+New functions chmatch() and %chin%, faster versions of match()
+and %in% for character vectors. R's internal string cache is
+utilised (no hash table is built). They are about 4 times faster
+than match() on the example in ?chmatch.
+
+As of Sep 2013 data.table is v1.8.10 on CRAN and we're working on v1.9.0. NEWS is updated live.
+
+But as I wrote originally, above :
+
+data.table has time series merge in mind. Two aspects to that: i)
+  multi column ordered keys such as (id,datetime) ii) fast prevailing
+  join (roll=TRUE) a.k.a. last observation carried forward.
+
+So the Pandas equi join of two character columns is probably still faster than data.table. Since it sounds like it hashes the combined two columns. data.table doesn't hash the key because it has prevailing ordered joins in mind. A ""key"" in data.table is literally just the sort order (similar to a clustered index in SQL; i.e., that's how the data is ordered in RAM). On the list is to add secondary keys, for example.
+In summary, the glaring speed difference highlighted by this particular two-character-column test with over 10,000 unique strings shouldn't be as bad now, since the known problem has been fixed.
+"
+"I got a list of dictionaries and want that to be sorted by a value of that dictionary.
+This
+[{'name':'Homer', 'age':39}, {'name':'Bart', 'age':10}]
+
+sorted by name, should become
+[{'name':'Bart', 'age':10}, {'name':'Homer', 'age':39}]
+
+","Using Schwartzian transform from Perl,
+py = [{'name':'Homer', 'age':39}, {'name':'Bart', 'age':10}]
+
+do
+sort_on = ""name""
+decorated = [(dict_[sort_on], dict_) for dict_ in py]
+decorated.sort()
+result = [dict_ for (key, dict_) in decorated]
+
+gives
+>>> result
+[{'age': 10, 'name': 'Bart'}, {'age': 39, 'name': 'Homer'}]
+
+More on Perl Schwartzian transform
+
+In computer science, the Schwartzian transform is a Perl programming
+  idiom used to improve the efficiency of sorting a list of items. This
+  idiom is appropriate for comparison-based sorting when the ordering is
+  actually based on the ordering of a certain property (the key) of the
+  elements, where computing that property is an intensive operation that
+  should be performed a minimal number of times. The Schwartzian
+  Transform is notable in that it does not use named temporary arrays.
+
+"
+"I'm searching for the fastest way to know if a value exists in a list (a list with millions of values in it) and what its index is? I know all values in the list are unique like my example.
+My first methods I try is(3.8sec in my real code):
+a = [4,2,3,1,5,6]
+
+if a.count(7) == 1:
+    b=a.index(7)
+    ""Do something with variable b""
+
+My second methods I try is (2x faster:1.9sec on my real code):
+a = [4,2,3,1,5,6]
+
+try:
+    b=a.index(7)
+except ValueError:
+    ""Do nothing""
+Else:
+    ""Do something with variable b""
+
+Proposed methods from S.O. user (2.74sec on my real code):
+a = [4,2,3,1,5,6]
+if 7 in a:
+    a.index(7)
+
+In my real code , first method take 3.81sec and the second methods take 1.88sec.
+It's a good improvement but:
+I'm a beginner with Python/scripting and I want to know if a fastest way exist to do the same things and save more process time?
+More specific explication for my application:
+In the API of blender a can access to a list of particles:
+particles = [1,2,3,4...etc.]
+
+From there , I can access to it's location:
+particles[x].location = [x,y,z]
+
+And I test for each particles if a neighbour exist by searching
+in the location of each particles like:
+if [x+1,y,z] in particles.location
+    ""find the identity of this neighbour particles in x:the index 
+    of the particles array""
+    particles.index([x+1,y,z])
+
+","7 in a
+
+Clearest and fastest way to do it.
+You can also consider using a set, but constructing that set from your list may take more time than faster membership testing will save. The only way to be certain is to benchmark well. (this also depends on what operations you require)
+"
+"from mechanize import Browser
+br = Browser()
+br.open('http://somewebpage')
+html = br.response().readlines()
+for line in html:
+  print line
+
+When printing a line in an HTML file, I'm trying to find a way to only show the contents of each HTML element and not the formatting itself. If it finds '<a href=""whatever.com"">some text</a>', it will only print 'some text', '<b>hello</b>' prints 'hello', etc. How would one go about doing this?
+","Short version!
+import re, cgi
+tag_re = re.compile(r'(<!--.*?-->|<[^>]*>)')
+
+# Remove well-formed tags, fixing mistakes by legitimate users
+no_tags = tag_re.sub('', user_input)
+
+# Clean up anything else by escaping
+ready_for_web = cgi.escape(no_tags)
+
+Regex source: MarkupSafe.  Their version handles HTML entities too, while this quick one doesn't.
+Why can't I just strip the tags and leave it?
+It's one thing to keep people from <i>italicizing</i> things, without leaving is floating around.  But it's another to take arbitrary input and make it completely harmless.  Most of the techniques on this page will leave things like unclosed comments (<!--) and angle-brackets that aren't part of tags (blah <<<><blah) intact.  The HTMLParser version can even leave complete tags in, if they're inside an unclosed comment.
+What if your template is {{ firstname }} {{ lastname }}?  firstname = '<a' and lastname = 'href=""http://evil.com/"">' will be let through by every tag stripper on this page (except @Medeiros!), because they're not complete tags on their own.  Stripping out normal HTML tags is not enough.
+Django's strip_tags, an improved (see next heading) version of the top answer to this question, gives the following warning:
+
+Absolutely NO guarantee is provided about the resulting string being HTML safe. So NEVER mark safe the result of a strip_tags call without escaping it first, for example with escape().
+
+Follow their advice!
+To strip tags with HTMLParser, you have to run it multiple times.
+It's easy to circumvent the top answer to this question.
+Look at this string (source and discussion):
+<img<!-- --> src=x onerror=alert(1);//><!-- -->
+
+The first time HTMLParser sees it, it can't tell that the <img...> is a tag.  It looks broken, so HTMLParser doesn't get rid of it.  It only takes out the <!-- comments -->, leaving you with
+<img src=x onerror=alert(1);//>
+
+This problem was disclosed to the Django project in March, 2014.  Their old strip_tags was essentially the same as the top answer to this question.  Their new version basically runs it in a loop until running it again doesn't change the string:
+# _strip_once runs HTMLParser once, pulling out just the text of all the nodes.
+
+def strip_tags(value):
+    """"""Returns the given HTML with all tags stripped.""""""
+    # Note: in typical case this loop executes _strip_once once. Loop condition
+    # is redundant, but helps to reduce number of executions of _strip_once.
+    while '<' in value and '>' in value:
+        new_value = _strip_once(value)
+        if len(new_value) >= len(value):
+            # _strip_once was not able to detect more tags
+            break
+        value = new_value
+    return value
+
+Of course, none of this is an issue if you always escape the result of strip_tags().
+Update 19 March, 2015: There was a bug in Django versions before 1.4.20, 1.6.11, 1.7.7, and 1.8c1.  These versions could enter an infinite loop in the strip_tags() function.  The fixed version is reproduced above.  More details here.
+Good things to copy or use
+My example code doesn't handle HTML entities - the Django and MarkupSafe packaged versions do.
+My example code is pulled from the excellent MarkupSafe library for cross-site scripting prevention.  It's convenient and fast (with C speedups to its native Python version).  It's included in Google App Engine, and used by Jinja2 (2.7 and up), Mako, Pylons, and more.  It works easily with Django templates from Django 1.7.
+Django's strip_tags and other html utilities from a recent version are good, but I find them less convenient than MarkupSafe.  They're pretty self-contained, you could copy what you need from this file.
+If you need to strip almost all tags, the Bleach library is good.  You can have it enforce rules like ""my users can italicize things, but they can't make iframes.""
+Understand the properties of your tag stripper!  Run fuzz tests on it!  Here is the code I used to do the research for this answer.
+sheepish note - The question itself is about printing to the console, but this is the top Google result for ""python strip html from string"", so that's why this answer is 99% about the web.
+"
+"I would like to use argparse to parse boolean command-line arguments written as ""--foo True"" or ""--foo False"". For example:
+my_program --my_boolean_flag False
+
+However, the following test code does not do what I would like:
+import argparse
+parser = argparse.ArgumentParser(description=""My parser"")
+parser.add_argument(""--my_bool"", type=bool)
+cmd_line = [""--my_bool"", ""False""]
+parsed_args = parser.parse(cmd_line)
+
+Sadly, parsed_args.my_bool evaluates to True. This is the case even when I change cmd_line to be [""--my_bool"", """"], which is surprising, since bool("""") evalutates to False.
+How can I get argparse to parse ""False"", ""F"", and their lower-case variants to be False?
+","I was looking for the same issue, and imho the pretty solution is :
+def str2bool(v):
+  return v.lower() in (""yes"", ""true"", ""t"", ""1"")
+
+and using that to parse the string to boolean as suggested above.
+"
+"For example I have two dicts:
+Dict A: {'a':1, 'b':2, 'c':3}
+Dict B: {'b':3, 'c':4, 'd':5}
+
+I need a pythonic way of 'combining' two dicts such that the result is :
+{'a':1, 'b':5, 'c':7, 'd':5}
+
+That is to say: if a key appears in both dicts, add their values, if it appears in only one dict, keep its value.
+",">>> A = {'a':1, 'b':2, 'c':3}
+>>> B = {'b':3, 'c':4, 'd':5}
+>>> c = {x: A.get(x, 0) + B.get(x, 0) for x in set(A).union(B)}
+>>> print(c)
+
+{'a': 1, 'c': 7, 'b': 5, 'd': 5}
+
+"
+"I have a df :
+>>> df
+                 STK_ID  EPS  cash
+STK_ID RPT_Date                   
+601166 20111231  601166  NaN   NaN
+600036 20111231  600036  NaN    12
+600016 20111231  600016  4.3   NaN
+601009 20111231  601009  NaN   NaN
+601939 20111231  601939  2.5   NaN
+000001 20111231  000001  NaN   NaN
+
+Then I just want the records whose EPS is not NaN, that is, df.drop(....) will return the dataframe as below:
+                  STK_ID  EPS  cash
+STK_ID RPT_Date                   
+600016 20111231  600016  4.3   NaN
+601939 20111231  601939  2.5   NaN
+
+How to do that ?
+","You could use dataframe method notnull or inverse of isnull, or numpy.isnan:
+In [332]: df[df.EPS.notnull()]
+Out[332]:
+   STK_ID  RPT_Date  STK_ID.1  EPS  cash
+2  600016  20111231    600016  4.3   NaN
+4  601939  20111231    601939  2.5   NaN
+
+
+In [334]: df[~df.EPS.isnull()]
+Out[334]:
+   STK_ID  RPT_Date  STK_ID.1  EPS  cash
+2  600016  20111231    600016  4.3   NaN
+4  601939  20111231    601939  2.5   NaN
+
+
+In [347]: df[~np.isnan(df.EPS)]
+Out[347]:
+   STK_ID  RPT_Date  STK_ID.1  EPS  cash
+2  600016  20111231    600016  4.3   NaN
+4  601939  20111231    601939  2.5   NaN
+
+"
+"How do I delete a file or folder in Python?
+I am using the Python scripting language running on the Windows XP operating system.
+","os.remove() will remove a file.
+os.rmdir() will remove an empty directory.
+shutil.rmtree() will delete a directory and all its contents.
+"
+"pip is a replacement for easy_install. But should I install pip using easy_install on Windows?  Is there a better way?
+","Python 2.7.9+ and 3.4+
+Good news! Python 3.4 (released March 2014) and Python 2.7.9 (released December 2014) ship with Pip. This is the best feature of any Python release. It makes the community's wealth of libraries accessible to everyone. Newbies are no longer excluded from using community libraries by the prohibitive difficulty of setup. In shipping with a package manager, Python joins Ruby, Node.js, Haskell, Perl, Go--almost every other contemporary language with a majority open-source community. Thank you Python.
+Of course, that doesn't mean Python packaging is problem solved. The experience remains frustrating. I discuss this in Stack Overflow question Does Python have a package/module management system?.
+And, alas for everyone using Python 2.7.8 or earlier (a sizable portion of the community). There's no plan to ship Pip to you. Manual instructions follow.
+Python 2 â¤ 2.7.8 and Python 3 â¤ 3.3
+Flying in the face of its 'batteries included' motto, Python ships without a package manager. To make matters worse, Pip was--until recently--ironically difficult to install.
+Official instructions
+Per http://www.pip-installer.org/en/latest/installing.html:
+Download get-pip.py, being careful to save it as a .py file rather than .txt. Then, run it from the command prompt:
+python get-pip.py
+
+You possibly need an administrator command prompt to do this. Follow Start a Command Prompt as an Administrator (Microsoft TechNet).
+Alternative instructions
+The official documentation tells users to install Pip and each of its dependencies from source. That's tedious for the experienced, and prohibitively difficult for newbies.
+For our sake, Christoph Gohlke prepares Windows installers (.msi) for popular Python packages. He builds installers for all Python versions, both 32 and 64 bit. You need to
+
+Install setuptools
+Install pip
+
+For me, this installed Pip at C:\Python27\Scripts\pip.exe. Find pip.exe on your computer, then add its folder (for example, C:\Python27\Scripts) to your path (Start / Edit environment variables). Now you should be able to run pip from the command line. Try installing a package:
+pip install httpie
+
+There you go (hopefully)! Solutions for common problems are given below:
+Proxy problems
+If you work in an office, you might be behind a HTTP proxy. If so, set the environment variables http_proxy and https_proxy. Most Python applications (and other free software) respect these. Example syntax:
+http://proxy_url:port
+http://username:password@proxy_url:port
+
+If you're really unlucky, your proxy might be a Microsoft NTLM proxy. Free software can't cope. The only solution is to install a free software friendly proxy that forwards to the nasty proxy. http://cntlm.sourceforge.net/
+Unable to find vcvarsall.bat
+Python modules can be part written in C or C++. Pip tries to compile from source. If you don't have a C/C++ compiler installed and configured, you'll see this cryptic error message.
+
+Error: Unable to find vcvarsall.bat
+
+You can fix that by installing a C++ compiler such as MinGW or Visual C++. Microsoft actually ship one specifically for use with Python. Or try Microsoft Visual C++ Compiler for Python 2.7.
+Often though it's easier to check Christoph's site for your package.
+"
+"I want to create a list of dates, starting with today, and going back an arbitrary number of days, say, in my example 100 days. Is there a better way to do it than this?
+import datetime
+
+a = datetime.datetime.today()
+numdays = 100
+dateList = []
+for x in range (0, numdays):
+    dateList.append(a - datetime.timedelta(days = x))
+print dateList
+
+","You can also use the day ordinal to make it simpler:
+def daterange(start_date, end_date):
+    for ordinal in range(start_date.toordinal(), end_date.toordinal()):
+        yield datetime.date.fromordinal(ordinal)
+
+"
+"I have a command line script that I run with a lot of arguments. I have now come to a point where I have too many arguments, and I want to have some arguments in dictionary form too.
+So in order to simplify things I would like to run the script with a settings file instead. I don't really know what libraries to use for the parsing of the file. What's the best practice for doing this? I could of course hammer something out myself, but if there is some library for this, I'm all ears.
+A few 'demands':
+
+Rather than using pickle I would like it to be a straight forward text file that can easily be read and edited.
+I wan't to be able to add dictionary-like data in it, i.e., some form of nesting should be supported.
+
+A simplified pseudo example file:
+truck:
+    color: blue
+    brand: ford
+city: new york
+cabriolet:
+    color: black
+    engine:
+        cylinders: 8
+        placement: mid
+    doors: 2
+
+","Take a look at python standard config parser.
+EDIT: Since nesting seems to be that important, you might consider handling your config file through JSON format.
+It then becomes a matter of using the json module with dumps and loads methods that will work with dictionaries nested to any level you want.
+"
+"I want to set up a complete Python IDE in Sublime Text 2.
+I want to know how to run the Python code from within the editor. Is it done using build system? How do I do it ?
+","On Mac OS X, save your file with a .py extension. Press â+B.  It runs in a window below.
+
+"
+"How can I parse a YAML file in Python?
+","If you have YAML that conforms to the YAML 1.2 specification (released 2009) then you should use ruamel.yaml (disclaimer: I am the author of that package).
+It is essentially a superset of PyYAML, which supports a most of YAML 1.1 (from 2005).
+If you want to be able to preserve your comments when round-tripping, you certainly should use ruamel.yaml.   
+Upgrading @Jon's example is easy:
+import ruamel.yaml as yaml
+
+with open(""example.yaml"") as stream:
+    try:
+        print(yaml.load(stream))
+    except yaml.YAMLError as exc:
+        print(exc)
+
+"
+"I am sketching the architecture for a set of programs that share various interrelated objects stored in a database. I want one of the programs to act as a service which provides a higher level interface for operations on these objects, and the other programs to access the objects through that service.
+I am currently aiming for Python and the Django framework as the technologies to implement that service with. I'm pretty sure I figure how to demonize the Python program in Linux. However, it is an optional spec item that the system should support Windows. I have little experience with Windows programming and no experience at all with Windows services.
+Is it possible to run a Python programs as a Windows service (i. e. run it automatically without user login)? I won't necessarily have to implement this part, but I need a rough idea how it would be done in order to decide whether to design along these lines.
+Edit: Thanks for all the answers so far, they are quite comprehensive. I would like to know one more thing: How is Windows aware of my service? Can I manage it with the native Windows utilities? Basically, what is the equivalent of putting a start/stop script in /etc/init.d?
+","Although I upvoted the chosen answer a couple of weeks back, in the meantime I struggled a lot more with this topic. It feels like having a special Python installation and using special modules to run a script as a service is simply the wrong way. What about portability and such?
+I stumbled across the wonderful Non-sucking Service Manager, which made it really simple and sane to deal with Windows Services. I figured since I could pass options to an installed service, I could just as well select my Python executable and pass my script as an option.
+I have not yet tried this solution, but I will do so right now and update this post along the process. I am also interested in using virtualenvs on Windows, so I might come up with a tutorial sooner or later and link to it here.
+"
+"Which image processing techniques could be used to implement an application that detects the christmas trees displayed in the following images?
+
+
+
+
+
+
+I'm searching for solutions that are going to work on all these images. Therefore, approaches that require training haar cascade classifiers or template matching are not very interesting.
+I'm looking for something that can be written in any programming language, as long as it uses only Open Source technologies. The solution must be tested with the images that are shared on this question. There are 6 input images and the answer should display the results of processing each of them. Finally, for each output image there must be red lines draw to surround the detected tree.
+How would you go about programmatically detecting the trees in these images?
+","Here is my simple and dumb solution.
+It is based upon the assumption that the tree will be the most bright and big thing in the picture.
+//g++ -Wall -pedantic -ansi -O2 -pipe -s -o christmas_tree christmas_tree.cpp `pkg-config --cflags --libs opencv`
+#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <iostream>
+
+using namespace cv;
+using namespace std;
+
+int main(int argc,char *argv[])
+{
+    Mat original,tmp,tmp1;
+    vector <vector<Point> > contours;
+    Moments m;
+    Rect boundrect;
+    Point2f center;
+    double radius, max_area=0,tmp_area=0;
+    unsigned int j, k;
+    int i;
+
+    for(i = 1; i < argc; ++i)
+    {
+        original = imread(argv[i]);
+        if(original.empty())
+        {
+            cerr << ""Error""<<endl;
+            return -1;
+        }
+
+        GaussianBlur(original, tmp, Size(3, 3), 0, 0, BORDER_DEFAULT);
+        erode(tmp, tmp, Mat(), Point(-1, -1), 10);
+        cvtColor(tmp, tmp, CV_BGR2HSV);
+        inRange(tmp, Scalar(0, 0, 0), Scalar(180, 255, 200), tmp);
+
+        dilate(original, tmp1, Mat(), Point(-1, -1), 15);
+        cvtColor(tmp1, tmp1, CV_BGR2HLS);
+        inRange(tmp1, Scalar(0, 185, 0), Scalar(180, 255, 255), tmp1);
+        dilate(tmp1, tmp1, Mat(), Point(-1, -1), 10);
+
+        bitwise_and(tmp, tmp1, tmp1);
+
+        findContours(tmp1, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+        max_area = 0;
+        j = 0;
+        for(k = 0; k < contours.size(); k++)
+        {
+            tmp_area = contourArea(contours[k]);
+            if(tmp_area > max_area)
+            {
+                max_area = tmp_area;
+                j = k;
+            }
+        }
+        tmp1 = Mat::zeros(original.size(),CV_8U);
+        approxPolyDP(contours[j], contours[j], 30, true);
+        drawContours(tmp1, contours, j, Scalar(255,255,255), CV_FILLED);
+
+        m = moments(contours[j]);
+        boundrect = boundingRect(contours[j]);
+        center = Point2f(m.m10/m.m00, m.m01/m.m00);
+        radius = (center.y - (boundrect.tl().y))/4.0*3.0;
+        Rect heightrect(center.x-original.cols/5, boundrect.tl().y, original.cols/5*2, boundrect.size().height);
+
+        tmp = Mat::zeros(original.size(), CV_8U);
+        rectangle(tmp, heightrect, Scalar(255, 255, 255), -1);
+        circle(tmp, center, radius, Scalar(255, 255, 255), -1);
+
+        bitwise_and(tmp, tmp1, tmp1);
+
+        findContours(tmp1, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+        max_area = 0;
+        j = 0;
+        for(k = 0; k < contours.size(); k++)
+        {
+            tmp_area = contourArea(contours[k]);
+            if(tmp_area > max_area)
+            {
+                max_area = tmp_area;
+                j = k;
+            }
+        }
+
+        approxPolyDP(contours[j], contours[j], 30, true);
+        convexHull(contours[j], contours[j]);
+
+        drawContours(original, contours, j, Scalar(0, 0, 255), 3);
+
+        namedWindow(argv[i], CV_WINDOW_NORMAL|CV_WINDOW_KEEPRATIO|CV_GUI_EXPANDED);
+        imshow(argv[i], original);
+
+        waitKey(0);
+        destroyWindow(argv[i]);
+    }
+
+    return 0;
+}
+
+The first step is to detect the most bright pixels in the picture, but we have to do a distinction between the tree itself and the snow which reflect its light. Here we try to exclude the snow appling a really simple filter on the color codes:
+GaussianBlur(original, tmp, Size(3, 3), 0, 0, BORDER_DEFAULT);
+erode(tmp, tmp, Mat(), Point(-1, -1), 10);
+cvtColor(tmp, tmp, CV_BGR2HSV);
+inRange(tmp, Scalar(0, 0, 0), Scalar(180, 255, 200), tmp);
+
+Then we find every ""bright"" pixel:
+dilate(original, tmp1, Mat(), Point(-1, -1), 15);
+cvtColor(tmp1, tmp1, CV_BGR2HLS);
+inRange(tmp1, Scalar(0, 185, 0), Scalar(180, 255, 255), tmp1);
+dilate(tmp1, tmp1, Mat(), Point(-1, -1), 10);
+
+Finally we join the two results:
+bitwise_and(tmp, tmp1, tmp1);
+
+Now we look for the biggest bright object:
+findContours(tmp1, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+max_area = 0;
+j = 0;
+for(k = 0; k < contours.size(); k++)
+{
+    tmp_area = contourArea(contours[k]);
+    if(tmp_area > max_area)
+    {
+        max_area = tmp_area;
+        j = k;
+    }
+}
+tmp1 = Mat::zeros(original.size(),CV_8U);
+approxPolyDP(contours[j], contours[j], 30, true);
+drawContours(tmp1, contours, j, Scalar(255,255,255), CV_FILLED);
+
+Now we have almost done, but there are still some imperfection due to the snow.
+To cut them off we'll build a mask using a circle and a rectangle to approximate the shape of a tree to delete unwanted pieces:
+m = moments(contours[j]);
+boundrect = boundingRect(contours[j]);
+center = Point2f(m.m10/m.m00, m.m01/m.m00);
+radius = (center.y - (boundrect.tl().y))/4.0*3.0;
+Rect heightrect(center.x-original.cols/5, boundrect.tl().y, original.cols/5*2, boundrect.size().height);
+
+tmp = Mat::zeros(original.size(), CV_8U);
+rectangle(tmp, heightrect, Scalar(255, 255, 255), -1);
+circle(tmp, center, radius, Scalar(255, 255, 255), -1);
+
+bitwise_and(tmp, tmp1, tmp1);
+
+The last step is to find the contour of our tree and draw it on the original picture.
+findContours(tmp1, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
+max_area = 0;
+j = 0;
+for(k = 0; k < contours.size(); k++)
+{
+    tmp_area = contourArea(contours[k]);
+    if(tmp_area > max_area)
+    {
+        max_area = tmp_area;
+        j = k;
+    }
+}
+
+approxPolyDP(contours[j], contours[j], 30, true);
+convexHull(contours[j], contours[j]);
+
+drawContours(original, contours, j, Scalar(0, 0, 255), 3);
+
+I'm sorry but at the moment I have a bad connection so it is not possible for me to upload pictures. I'll try to do it later.
+Merry Christmas.
+EDIT:
+Here some pictures of the final output:
+
+
+
+
+
+
+"
+"In ""Programming Python"", Mark Lutz mentions ""mixins"". I'm from a C/C++/C# background and I have not heard the term before. What is a mixin? 
+Reading between the lines of this example (which I've linked to because it's quite long), I'm presuming it's a case of using multiple inheritance to extend a class as opposed to 'proper' subclassing. Is this right? 
+Why would I want to do that rather than put the new functionality into a subclass? For that matter, why would a mixin/multiple inheritance approach be better than using composition?
+What separates a mixin from multiple inheritance? Is it just a matter of semantics?
+","I think of them as a disciplined way of using multiple inheritance - because ultimately a mixin is just another python class that (might) follow the conventions about classes that are called mixins.
+My understanding of the conventions that govern something you would call a Mixin are that a Mixin:
+
+adds methods but not instance variables (class constants are OK)
+only inherits from object (in Python)
+
+That way it limits the potential complexity of multiple inheritance, and makes it reasonably easy to track the flow of your program by limiting where you have to look (compared to full multiple inheritance).  They are similar to ruby modules.
+If I want to add instance variables (with more flexibility than allowed for by single inheritance) then I tend to go for composition.
+Having said that, I have seen classes called XYZMixin that do have instance variables.
+"
+"I want to use PhantomJS in Python. I googled this problem but couldn't find proper solutions.
+I find os.popen()  may be a good choice. But I couldn't pass some arguments to it.
+Using subprocess.Popen() may be a proper solution for now. I want to know whether there's a better solution or not.
+Is there a way to use PhantomJS in Python?
+","Now since the GhostDriver comes bundled with the PhantomJS, it has become even more convenient to use it through Selenium.
+I tried the Node installation of PhantomJS, as suggested by Pykler, but in practice I found it to be slower than the standalone installation of PhantomJS. I guess standalone installation didn't provided these features earlier, but as of v1.9, it very much does so. 
+
+Install PhantomJS (http://phantomjs.org/download.html) (If you are on Linux, following instructions will help http://stackoverflow.com/a/14267295/382630)
+Install Selenium using pip.
+
+Now you can use like this
+import selenium.webdriver
+driver = selenium.webdriver.PhantomJS()
+driver.get('http://google.com')
+# do some processing
+
+driver.quit()
+
+"
+"I want to write a function that will execute a shell command and return its output as a string, no matter, is it an error or success message. I just want to get the same result that I would have gotten with the command line.
+What would be a code example that would do such a thing?
+For example:
+def run_command(cmd):
+    # ??????
+
+print run_command('mysqladmin create test -uroot -pmysqladmin12')
+# Should output something like:
+# mysqladmin: CREATE DATABASE failed; error: 'Can't create database 'test'; database exists'
+
+","Vartec's answer doesn't read all lines, so I made a version that did:
+def run_command(command):
+    p = subprocess.Popen(command,
+                         stdout=subprocess.PIPE,
+                         stderr=subprocess.STDOUT)
+    return iter(p.stdout.readline, b'')
+
+Usage is the same as the accepted answer:
+command = 'mysqladmin create test -uroot -pmysqladmin12'.split()
+for line in run_command(command):
+    print(line)
+
+"
+"I want to create a dynamic object (inside another object) in Python and then add attributes to it.
+I tried:
+obj = someobject
+obj.a = object()
+setattr(obj.a, 'somefield', 'somevalue')
+
+but this didn't work.
+Any ideas?
+edit:
+I am setting the attributes from a for loop which loops through a list of values, e.g.
+params = ['attr1', 'attr2', 'attr3']
+obj = someobject
+obj.a = object()
+
+for p in params:
+   obj.a.p # where p comes from for loop variable
+
+In the above example I would get obj.a.attr1, obj.a.attr2, obj.a.attr3.  
+I used the setattr function because I didn't know how to do obj.a.NAME from a for loop.
+How would I set the attribute based on the value of p in the example above?
+","There is types.SimpleNamespace class in Python 3.3+:
+obj = someobject
+obj.a = SimpleNamespace()
+for p in params:
+    setattr(obj.a, p, value)
+# obj.a.attr1
+
+"
+"What are the uses for **kwargs in Python?
+I know you can do an objects.filter on a table and pass in a **kwargs argument.  
+Can I also do this for specifying time deltas i.e. timedelta(hours = time1)? 
+How exactly does it work? Is it classes as 'unpacking'? Like a,b=1,2?
+","As an addition, you can also mix different ways of usage when calling kwargs functions:
+def test(**kwargs):
+    print kwargs['a']
+    print kwargs['b']
+    print kwargs['c']
+
+
+args = { 'b': 2, 'c': 3}
+
+test( a=1, **args )
+
+gives this output:
+1
+2
+3
+
+Note that **kwargs has to be the last argument
+"
+"Is there a way of reading one single character from the user input? For instance, they press one key at the terminal and it is returned (sort of like getch()). I know there's a function in Windows for it, but I'd like something that is cross-platform.
+","Also worth trying is the readchar library, which is in part based on the ActiveState recipe mentioned in other answers.
+Installation:
+pip install readchar
+
+Usage:
+import readchar
+print(""Reading a char:"")
+print(repr(readchar.readchar()))
+print(""Reading a key:"")
+print(repr(readchar.readkey()))
+
+Tested on Windows and Linux with Python 2.7.
+On Windows, only keys which map to letters or ASCII control codes are supported (Backspace, Enter, Esc, Tab, Ctrl+letter). On GNU/Linux (depending on exact terminal, perhaps?) you also get Insert, Delete, Pg Up, Pg Dn, Home, End and F n keys... but then, there's issues separating these special keys from an Esc.
+Caveat: Like with most (all?) answers in here, signal keys like Ctrl+C, Ctrl+D and Ctrl+Z are caught and returned (as '\x03', '\x04' and '\x1a' respectively); your program can be come difficult to abort.
+"
+"I want my script to wait until the user presses any key.
+How do I do that?
+","The python manual provides the following:
+import termios, fcntl, sys, os
+fd = sys.stdin.fileno()
+
+oldterm = termios.tcgetattr(fd)
+newattr = termios.tcgetattr(fd)
+newattr[3] = newattr[3] & ~termios.ICANON & ~termios.ECHO
+termios.tcsetattr(fd, termios.TCSANOW, newattr)
+
+oldflags = fcntl.fcntl(fd, fcntl.F_GETFL)
+fcntl.fcntl(fd, fcntl.F_SETFL, oldflags | os.O_NONBLOCK)
+
+try:
+    while 1:
+        try:
+            c = sys.stdin.read(1)
+            print ""Got character"", repr(c)
+        except IOError: pass
+finally:
+    termios.tcsetattr(fd, termios.TCSAFLUSH, oldterm)
+    fcntl.fcntl(fd, fcntl.F_SETFL, oldflags)
+
+which can be rolled into your use case.
+"
+"I am trying to build a shared library using a C extension file but first I have to generate the output file using the command below:
+gcc -Wall utilsmodule.c -o Utilc
+
+After executing the command, I get this error message:
+
+utilsmodule.c:1:20: fatal error: Python.h: No such file or directory
+  compilation terminated.
+
+in fact I have tried all the suggested solutions over the internet but the problem still exists ... also I have no problem with Python.h. I managed to locate the file on my machine ... anybody has faced the same problem before??
+","Two things you have to do.
+Install development package for Python, in case of Debian/Ubuntu/Mint it's done with command:
+sudo apt-get install python-dev
+
+Second thing is that include files are not by default in the include path, nor is Python library linked with executable by default. You need to add these flags (replace Python's version accordingly):
+-I/usr/include/python2.7 -lpython2.7 
+
+In other words your compile command ought to be:
+gcc -Wall -I/usr/include/python2.7 -lpython2.7  utilsmodule.c -o Utilc 
+
+"
+"I tried to install the Python package dulwich:
+pip install dulwich
+
+But I get a cryptic error message:
+error: Unable to find vcvarsall.bat
+
+The same happens if I try installing the package manually:
+> python setup.py install
+running build_ext
+building 'dulwich._objects' extension
+error: Unable to find vcvarsall.bat
+
+","You can install compiled version from http://www.lfd.uci.edu/~gohlke/pythonlibs/
+"
+"Is it possible to terminate a running thread without setting/checking any flags/semaphores/etc.?
+","This is based on thread2 -- killable threads (Python recipe)
+You need to call PyThreadState_SetasyncExc(), which is only available through ctypes.
+This has only been tested on Python 2.7.3, but it is likely to work with other recent 2.x releases.
+import ctypes
+
+def terminate_thread(thread):
+    """"""Terminates a python thread from another thread.
+
+    :param thread: a threading.Thread instance
+    """"""
+    if not thread.isAlive():
+        return
+
+    exc = ctypes.py_object(SystemExit)
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(
+        ctypes.c_long(thread.ident), exc)
+    if res == 0:
+        raise ValueError(""nonexistent thread id"")
+    elif res > 1:
+        # """"""if it returns a number greater than one, you're in trouble,
+        # and you should call it again with exc=NULL to revert the effect""""""
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(thread.ident, None)
+        raise SystemError(""PyThreadState_SetAsyncExc failed"")
+
+"
+"How can I output colored text to the terminal, in Python?
+What is the best Unicode symbol to represent a solid block?
+","I use the colorama module for coloured terminal printing in Python. A link is here http://pypi.python.org/pypi/colorama
+Some example code of printing red and green text:
+from colorama import *
+
+print(Fore.GREEN + 'Green text')
+print(Fore.RED + 'Red text')
+
+I used colorama to write a basic Matrix program
+Installation on Ubuntu (your distribution install command may be different)
+sudo apt-get install python-pip
+sudo pip install colorama
+
+"
+"I have a directory which hosts all of my Django apps (C:\My_Projects). I want to add this directory to my pythonpath so I can call the apps directly.
+I have tried adding C:\My_Projects\; to my Path variable from the Windows GUI (My Computer > Properties > Advanced System Settings > Environment Variables). But it still doesn't read the coltrane module and generates this error:
+
+Error: No module named coltrane
+
+","You can also add a .pth file containing the desired directory in either your c:\PythonX.X folder, or your \site-packages folder, which tends to be my preferred method when I'm developing a Python package.
+See here for more information.
+"
+"Why does the following behave unexpectedly in Python?
+>>> a = 256
+>>> b = 256
+>>> a is b
+True           # This is an expected result
+>>> a = 257
+>>> b = 257
+>>> a is b
+False          # What happened here? Why is this False?
+>>> 257 is 257
+True           # Yet the literal numbers compare properly
+
+I am using Python 2.5.2. Trying some different versions of Python, it appears that Python 2.3.3 shows the above behaviour between 99 and 100.
+Based on the above, I can hypothesize that Python is internally implemented such that ""small"" integers are stored in a different way than larger integers and the is operator can tell the difference. Why the leaky abstraction? What is a better way of comparing two arbitrary objects to see whether they are the same when I don't know in advance whether they are numbers or not?
+","I'm late but, you want some of that good source with your answer?*
+Good thing about Python is that you can actually see the source for this. I'm going to use Python 3.5 links for now; finding the corresponding 2.x ones is trivial.
+In Python, int objects are actually (unified some time ago) of c long type. The dedicated Python C-API function that handles creating a new int object is PyLong_FromLong(long v). The description for this function is:
+
+The current implementation keeps an array of integer objects for all integers between -5 and 256, when you create an int in that range you actually just get back a reference to the existing object. So it should be possible to change the value of 1. I suspect the behaviour of Python in this case is undefined. :-)
+
+Don't know about you but I see this and think:
+Let's find that array!
+If you haven't fiddled with the C code implementing Python you should, everything is pretty organized and readable. For our case, we need to look in the Objects/ subdirectory of the main source code directory tree.
+PyLong_FromLong deals with long objects so it shouldn't be hard to deduce that we need to peek inside longobject.c. After looking inside you might think things are chaotic; they are, but fear not, the function we're looking for is chilling at line 230 waiting for us to check it out. It's a smallish function so the main body (excluding declarations) is easily pasted here:
+PyObject *
+PyLong_FromLong(long ival)
+{
+    // omitting declarations
+
+    CHECK_SMALL_INT(ival);
+
+    if (ival < 0) {
+        /* negate: cant write this as abs_ival = -ival since that
+           invokes undefined behaviour when ival is LONG_MIN */
+        abs_ival = 0U-(unsigned long)ival;
+        sign = -1;
+    }
+    else {
+        abs_ival = (unsigned long)ival;
+    }
+
+    /* Fast path for single-digit ints */
+    if (!(abs_ival >> PyLong_SHIFT)) {
+        v = _PyLong_New(1);
+        if (v) {
+            Py_SIZE(v) = sign;
+            v->ob_digit[0] = Py_SAFE_DOWNCAST(
+                abs_ival, unsigned long, digit);
+        }
+        return (PyObject*)v; 
+}
+
+Now, we're no C master-code-haxxorz but we're also not dumb, we can see that CHECK_SMALL_INT(ival); peeking at us all seductively; we can understand it has something to do with this. Let's check it out:
+#define CHECK_SMALL_INT(ival) \
+    do if (-NSMALLNEGINTS <= ival && ival < NSMALLPOSINTS) { \
+        return get_small_int((sdigit)ival); \
+    } while(0)
+
+So it's a macro that calls function get_small_int if the value ival satisfies the condition:
+if (-NSMALLNEGINTS <= ival && ival < NSMALLPOSINTS)
+
+So what are NSMALLNEGINTS and NSMALLPOSINTS? If you guessed macros you get nothing because that wasn't such a hard question.. Anyway, here they are:
+#ifndef NSMALLPOSINTS
+#define NSMALLPOSINTS           257
+#endif
+#ifndef NSMALLNEGINTS
+#define NSMALLNEGINTS           5
+#endif
+
+So our condition is if (-5 <= ival && ival < 257) call get_small_int. 
+No other place to go but continue our journey by looking at get_small_int in all its glory (well, we'll just look at it's body because that's were the interesting things are):
+PyObject *v;
+assert(-NSMALLNEGINTS <= ival && ival < NSMALLPOSINTS);
+v = (PyObject *)&small_ints[ival + NSMALLNEGINTS];
+Py_INCREF(v);
+
+Okay, create a PyObject, assert that the previous condition holds and execute the assignment:
+v = (PyObject *)&small_ints[ival + NSMALLNEGINTS];
+
+small_ints looks a lot like that array we've been searching for.. and, it is! We could've just read the damn documentation and we would've know all along!:
+/* Small integers are preallocated in this array so that they
+   can be shared.
+   The integers that are preallocated are those in the range
+   -NSMALLNEGINTS (inclusive) to NSMALLPOSINTS (not inclusive).
+*/
+static PyLongObject small_ints[NSMALLNEGINTS + NSMALLPOSINTS];
+
+So yup, this is our guy. When you want to create a new int in the range [NSMALLNEGINTS, NSMALLPOSINTS) you'll just get back a reference to an already existing object that has been preallocated. 
+Since the reference refers to the same object issuing id() directly or checking for identity with is on it will return exactly the same thing. 
+But, when are they allocated??
+During initialization in _PyLong_Init Python will gladly enter in a for loop do do this for you: 
+for (ival = -NSMALLNEGINTS; ival <  NSMALLPOSINTS; ival++, v++) {
+    // Look me up!
+}
+
+I hope my explanation has made you C (common pun) things clearly now.
+
+But, 257 is 257? What's up?
+This is actually easier to explain, and I have attempted to do so already; it's due to the fact that Python will execute this interactive statement:
+>>> 257 is 257
+
+In its own execution frame. When constructing this frame Python will see that you have two matching literals and will use the same PyLongObject representing 257. You can see this if you do the compilation yourself and examine its contents:
+>>> codeObj = compile(""257 is 257"", ""blah!"", ""exec"")
+>>> codeObj.co_consts
+(257, None)
+
+When Python does the operation; it's now just going to load the exact same object:
+>>> import dis
+>>> dis.dis(codeObj)
+  1           0 LOAD_CONST               0 (257)   # dis
+              3 LOAD_CONST               0 (257)   # dis again
+              6 COMPARE_OP               8 (is)
+
+So is will return True.
+
+* -- I'll try and word this in a more introductory manner in order for most to be able to follow along.
+"
+"I would like to make several statements that give standard output without seeing newlines in between statements.
+Specifically, suppose I have:
+for item in range(1,100):
+    print item
+
+The result is:
+1
+2
+3
+4
+.
+.
+.
+
+How get this to instead look like:
+1 2 3 4 5 ...
+
+Even better, is it possible to print the single number over the last number, so only one number is on the screen at a time?
+","Like the other examples,
+I use a similar approach but instead of spending time calculating out the last output length, etc,  
+I simply use ANSI code escapes to move back to the beginning of the line and then clear that entire line before printing my current status output.
+import sys
+
+class Printer():
+    """"""Print things to stdout on one line dynamically""""""
+    def __init__(self,data):
+        sys.stdout.write(""\r\x1b[K""+data.__str__())
+        sys.stdout.flush()
+
+To use in your iteration loop you would just call something like:
+x = 1
+for f in fileList:
+    ProcessFile(f)
+    output = ""File number %d completed."" % x
+    Printer(output)
+    x += 1   
+
+See more here
+"
+"I've been hunting for an answer to this on South's site, Google, and SO, but couldn't find a simple way to do this. 
+I want to rename a Django model using South.
+Say you have the following:
+class Foo(models.Model):
+    name = models.CharField()
+
+class FooTwo(models.Model):
+    name = models.CharField()
+    foo = models.ForeignKey(Foo)
+
+and you want to convert Foo to Bar, namely
+class Bar(models.Model):
+    name = models.CharField()
+
+class FooTwo(models.Model):
+    name = models.CharField()
+    foo = models.ForeignKey(Bar)
+
+To keep it simple, I'm just trying to change the name from Foo to Bar, but ignore the foo member in FooTwo for now.
+What's the easiest way to do this using South?
+
+I could probably do a data migration, but that seems pretty involved.
+Write a custom migration, e.g. db.rename_table('city_citystate', 'geo_citystate'), but I'm not sure how to fix the foreign key in this case.
+An easier way that you know?
+
+","Make the changes in models.py and then run
+./manage.py schemamigration --auto myapp
+
+When you inspect the migration file, you'll see that it deletes a table and creates a new one
+class Migration(SchemaMigration):
+
+    def forwards(self, orm):
+        # Deleting model 'Foo'                                                                                                                      
+        db.delete_table('myapp_foo')
+
+        # Adding model 'Bar'                                                                                                                        
+        db.create_table('myapp_bar', (
+        ...
+        ))
+        db.send_create_signal('myapp', ['Bar'])
+
+    def backwards(self, orm):
+        ...
+
+This is not quite what you want. Instead, edit the migration so that it looks like:
+class Migration(SchemaMigration):
+
+    def forwards(self, orm):
+        # Renaming model from 'Foo' to 'Bar'                                                                                                                      
+        db.rename_table('myapp_foo', 'myapp_bar')                                                                                                                        
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(
+                app_label='myapp', model='foo').update(model='bar')
+
+    def backwards(self, orm):
+        # Renaming model from 'Bar' to 'Foo'                                                                                                                      
+        db.rename_table('myapp_bar', 'myapp_foo')                                                                                                                        
+        if not db.dry_run:
+            orm['contenttypes.contenttype'].objects.filter(app_label='myapp', model='bar').update(model='foo')
+
+In the absence of the update statement, the db.send_create_signal call will create a new ContentType with the new model name. But it's better to just update the ContentType you already have in case there are database objects pointing to it (e.g., via a GenericForeignKey).
+Also, if you've renamed some columns which are foreign keys to the renamed model, don't forget to
+db.rename_column(myapp_model, foo_id, bar_id)
+
+"
+"What would be a nice way to go from {2:3, 1:89, 4:5, 3:0} to {1:89, 2:3, 3:0, 4:5}?
+I checked some posts but they all use the ""sorted"" operator that returns tuples. 
+","Found another way:
+import json
+print json.dumps(d, sort_keys = True)
+
+upd:
+1. this also sorts nested objects (thanks @DanielF).
+2. python dictionaries are unordered therefore this is sutable for print or assign to str only.
+"
+"I've got a Python program where two variables are set to the value 'public'. In a conditional expression I have the comparison var1 is var2 which fails, but if I change it to var1 == var2 it returns True.
+Now if I open my Python interpreter and do the same ""is"" comparison, it succeeds.
+>>> s1 = 'public'
+>>> s2 = 'public'
+>>> s2 is s1
+True
+
+What am I missing here?
+","I am answering the question even though the question is to old because no answers above quotes the language reference
+Actually the is operator checks for identity and == operator checks for equality,
+From Language Reference:
+Types affect almost all aspects of object behavior. Even the importance of object identity is affected in some sense: for immutable types, operations that compute new values may actually return a reference to any existing object with the same type and value, while for mutable objects this is not allowed. E.g., after a = 1; b = 1, a and b may or may not refer to the same object with the value one, depending on the implementation, but after c = []; d = [], c and d are guaranteed to refer to two different, unique, newly created empty lists. (Note that c = d = [] assigns the same object to both c and d.)
+so from above statement we can infer that the strings which is an immutable type may fail when checked with ""is"" and may checked succeed when checked with ""is""
+The same applies for int,tuple which are also immutable types
+"
+"I have always used tabs for indentation when I do Python programming. But then I came across a question here on SO where someone pointed out that most Python programmers use spaces instead of tabs to minimize editor-to-editor mistakes.
+How does that make a difference? Are there other reasons why one would use spaces instead of tabs for Python? Or is it simply not true?
+Should I switch my editor to insert spaces instead of tabs right away or keep on going like I used to?
+","Tabs rule.  Same argument for nested loops and you want to bring the outer loop ""back"" 1 level.  Tip: If you want to convert old space-riddled python code into tabs use the TabOut utility available as an executable on http://www.textpad.com/add-ons/.
+"
+"I need to execute a Python script from the Django shell. I tried
+./manage.py shell << my_script.py
+
+But it didn't work. It was just kinda waiting for me to write something.
+","The << part is wrong, use < instead:
+$ ./manage.py shell < myscript.py
+
+You could also do:
+$ ./manage.py shell
+...
+>>> execfile('myscript.py')
+
+"
+"In Python, what commands can I use to find:
+
+the current directory (where I was in the terminal when I ran the Python script), and
+where the file I am executing is?
+
+","If you're using Python 3.4, there is the brand new higher-level pathlib module which allows you to conveniently call pathlib.Path.cwd() to get a Path object representing your current working directory, along with many other new features.
+More info on this new API can be found here.
+Note: The pathlib module API is currently a provisional API, which means there is no guarantee of backward compatibility. More on provisional APIs can be found here
+"
+"Is there a way to get all attributes/methods/fields/etc. of an object in Python?
+vars() is close to what I want, but it doesn't work unless an object has a __dict__, which isn't always true (e.g. it's not true for a list, a dict, etc.).
+","What you probably want is dir().
+The catch is that classes are able to override the special __dir__ method, which causes dir() to return whatever the class wants (though they are encouraged to return an accurate list, this is not enforced). Furthermore, some objects may implement dynamic attributes by overriding __getattr__, may be RPC proxy objects, or may be instances of C-extension classes. If your object is one these examples, they may not have a __dict__ or be able to provide a comprehensive list of attributes via __dir__: many of these objects may have so many dynamic attrs it doesn't won't actually know what it has until you try to access it. 
+In the short run, if dir() isn't sufficient, you could write a function which traverses __dict__ for an object, then __dict__ for all the classes in obj.__class__.__mro__; though this will only work for normal python objects. In the long run, you may have to use duck typing + assumptions - if it looks like a duck, cross your fingers, and hope it has .feathers.
+"
+"What does the if __name__ == ""__main__"": do?
+# Threading example
+import time, thread
+
+def myfunction(string, sleeptime, lock, *args):
+    while 1:
+        lock.acquire()
+        time.sleep(sleeptime)
+        lock.release()
+        time.sleep(sleeptime)
+if __name__ == ""__main__"":
+    lock = thread.allocate_lock()
+    thread.start_new_thread(myfunction, (""Thread #: 1"", 2, lock))
+    thread.start_new_thread(myfunction, (""Thread #: 2"", 2, lock))
+
+","
+What does if __name__ == â__main__â: do?
+
+__name__ is a global variable (in Python, global actually means on the module level) that exists in all namespaces. It is typically the module's name (as a str type).
+As the only special case, however, in whatever Python process you run, as in mycode.py:
+python mycode.py
+
+the otherwise anonymous global namespace is assigned the value of '__main__' to its __name__. 
+Thus, including the final lines
+if __name__ == '__main__':
+    main()
+
+
+at the end of your mycode.py script,
+when it is the primary, entry-point module that is run by a Python process, 
+
+will cause your script's uniquely defined main function to run. 
+Another benefit of using this construct: you can also import your code as a module in another script and then run the main function if and when your program decides:
+import mycode
+# ... any amount of other code
+mycode.main()
+
+"
+"Why are there no ++ and -- operators in Python?
+","Clarity!
+Python is a lot about clarity and no programmer is likely to correctly guess the meaning of --a unless s/he's learned a language having that construct.
+Python is also a lot about avoiding constructs that invite mistakes and the ++ operators are known to be rich sources of defects.
+These two reasons are enough not to have those operators in Python.
+The decision that Python uses indentation to mark blocks rather
+than syntactical means such as some form of begin/end bracketing 
+or mandatory end marking is based largely on the same considerations.
+For illustration, have a look at the discussion around introducing a conditional operator (in C: cond ? resultif : resultelse) into Python in 2005.
+Read at least the first message and the decision message of that discussion (which had several precursors on the same topic previously).
+Trivia:
+The PEP frequently mentioned therein is the ""Python Extension Proposal"" PEP 308. LC means list comprehension, GE means generator expression (and don't worry if those confuse you, they are none of the few complicated spots of Python).
+"
+"I want to detect whether module has changed. Now, using inotify is simple, you just need to know the directory you want to get notifications from.
+How do I retrieve a module's path in python?
+","I will try tackling a few variations on this question as well:
+
+finding the path of the called script  
+finding the path of the currently executing script  
+finding the directory of the called script
+
+(Some of these questions have been asked on SO, but have been closed as duplicates and redirected here.)
+Caveats of Using __file__
+For a module that you have imported:
+import something
+something.__file__ 
+
+will return the absolute path of the module.  However, given the folowing script foo.py:
+#foo.py
+print '__file__', __file__
+
+Calling it with 'python foo.py' Will return simply 'foo.py'.  If you add a shebang:
+#!/usr/bin/python 
+#foo.py
+print '__file__', __file__
+
+and call it using ./foo.py, it will return './foo.py'.  Calling it from a different directory, (eg put foo.py in directory bar), then calling either
+python bar/foo.py
+
+or adding a shebang and executing the file directly:
+bar/foo.py
+
+will return 'bar/foo.py' (the relative path).
+Finding the directory
+Now going from there to get the directory, os.path.dirname(__file__) can also be tricky.  At least on my system, it returns an empty string if you call it from the same directory as the file.  ex.
+# foo.py
+import os
+print '__file__ is:', __file__
+print 'os.path.dirname(__file__) is:', os.path.dirname(__file__)
+
+will output:
+__file__ is: foo.py
+os.path.dirname(__file__) is: 
+
+In other words, it returns an empty string, so this does not seem reliable if you want to use it for the current file (as opposed to the file of an imported module).  To get around this, you can wrap it in a call to abspath:
+# foo.py
+import os
+print 'os.path.abspath(__file__) is:', os.path.abspath(__file__)
+print 'os.path.dirname(os.path.abspath(__file__)) is:', os.path.dirname(os.path.abspath(__file__))
+
+which outputs something like:
+os.path.abspath(__file__) is: /home/user/bar/foo.py
+os.path.dirname(os.path.abspath(__file__)) is: /home/user/bar
+
+Note that abspath() does NOT resolve symlinks.  If you want to do this, use realpath() instead.  For example, making a symlink file_import_testing_link pointing to file_import_testing.py, with the following content:
+import os
+print 'abspath(__file__)',os.path.abspath(__file__)
+print 'realpath(__file__)',os.path.realpath(__file__)
+
+executing will print absolute paths something like:
+abspath(__file__) /home/user/file_test_link
+realpath(__file__) /home/user/file_test.py
+
+file_import_testing_link -> file_import_testing.py
+Using inspect
+@SummerBreeze mentions using the inspect module.
+This seems to work well, and is quite concise, for imported modules:
+import os
+import inspect
+print 'inspect.getfile(os) is:', inspect.getfile(os)
+
+obediently returns the absolute path.  However for finding the path of the currently executing script, I did not see a way to use it.
+"
+"I'm using the Python bindings to run Selenium WebDriver.
+from selenium import webdriver
+wd = webdriver.Firefox()
+
+I know I can grab a webelement like so...
+elem = wd.find_element_by_css_selector('#my-id')
+
+And I know I can get the full page source with...
+wd.page_source
+
+But is there anyway to get the ""element source""?
+elem.source   # <-- returns the HTML as a string
+
+The selenium webdriver docs for Python are basically non-existent and I don't see anything in the code that seems to enable that functionality.
+Any thoughts on the best way to access the HTML of an element (and its children)?
+","You can read innerHTML attribute to get source of the content of the element or outerHTML for source with the current element.
+Python:
+element.get_attribute('innerHTML')
+
+Java:
+elem.getAttribute(""innerHTML"");
+
+C#:
+element.GetAttribute(""innerHTML"");
+
+Ruby:
+element.attribute(""innerHTML"")
+
+Tested and works with the ChromeDriver.
+"
+"Yes, I know this subject has been covered before (here, here, here, here), but as far as I know, all solutions, except for one, fail on a list like this:
+L = [[[1, 2, 3], [4, 5]], 6]
+
+Where the desired output is
+[1, 2, 3, 4, 5, 6]
+
+Or perhaps even better, an iterator. The only solution I saw that works for an arbitrary nesting is found in this question:
+def flatten(x):
+    result = []
+    for el in x:
+        if hasattr(el, ""__iter__"") and not isinstance(el, basestring):
+            result.extend(flatten(el))
+        else:
+            result.append(el)
+    return result
+
+flatten(L)
+
+Is this the best model? Did I overlook something? Any problems?
+","def flatten(xs):
+    res = []
+    def loop(ys):
+        for i in ys:
+            if isinstance(i, list):
+                loop(i)
+            else:
+                res.append(i)
+    loop(xs)
+    return res
+
+"
+"I'm having problems dealing with unicode characters from text fetched from different web pages (on different sites). I am using BeautifulSoup. 
+The problem is that the error is not always reproducible; it sometimes works with some pages, and sometimes, it barfs by throwing a UnicodeEncodeError. I have tried just about everything I can think of, and yet I have not found anything that works consistently without throwing some kind of Unicode-related error.
+One of the sections of code that is causing problems is shown below:
+agent_telno = agent.find('div', 'agent_contact_number')
+agent_telno = '' if agent_telno is None else agent_telno.contents[0]
+p.agent_info = str(agent_contact + ' ' + agent_telno).strip()
+
+Here is a stack trace produced on SOME strings when the snippet above is run:
+Traceback (most recent call last):
+  File ""foobar.py"", line 792, in <module>
+    p.agent_info = str(agent_contact + ' ' + agent_telno).strip()
+UnicodeEncodeError: 'ascii' codec can't encode character u'\xa0' in position 20: ordinal not in range(128)
+
+I suspect that this is because some pages (or more specifically, pages from some of the sites) may be encoded, whilst others may be unencoded. All the sites are based in the UK and provide data meant for UK consumption - so there are no issues relating to internalization or dealing with text written in anything other than English.
+Does anyone have any ideas as to how to solve this so that I can CONSISTENTLY fix this problem?
+","I've actually found that in most of my cases, just stripping out those characters is much simpler:
+s = mystring.decode('ascii', 'ignore')
+
+"
+"The following use of super() raises a TypeError: why?
+>>> from  HTMLParser import HTMLParser
+>>> class TextParser(HTMLParser):
+...     def __init__(self):
+...         super(TextParser, self).__init__()
+...         self.all_data = []
+...         
+>>> TextParser()
+(...)
+TypeError: must be type, not classobj
+
+There is a similar question on StackOverflow: python super() raises TypeError ! Why?, where the error is explained by the fact that the user class is not a new-style class.  However, the class above is a new-style class, as it inherits from object:
+>>> isinstance(HTMLParser(), object)
+True
+
+What am I missing? How can I use super(), here?
+Using HTMLParser.__init__(self) instead of super(TextParser, self).__init__() would work, but I would like to understand the TypeError.
+PS: Joachim pointed out that being a new-style-class instance is not equivalent to being an object. I read the opposite many times, hence my confusion (example of new-style class instance test based on object instance test: http://stackoverflow.com/revisions/2655651/3).
+","If you look at the inheritance tree (in version 2.6), HTMLParser inherits from SGMLParser which inherits from ParserBase which doesn't inherits from object. I.e. HTMLParser is an old-style class.
+About your checking with isinstance, I did a quick test in ipython:
+
+In [1]: class A:
+   ...:     pass
+   ...: 
+
+In [2]: isinstance(A, object)
+Out[2]: True
+
+Even if a class is old-style class, it's still an instance of object.
+"
+"I'm pretty much new in Python object oriented programming and I have trouble
+understanding the super() function (new style classes) especially when it comes to multiple inheritance.
+For example if you have something like:
+class First(object):
+    def __init__(self):
+        print ""first""
+
+class Second(object):
+    def __init__(self):
+        print ""second""
+
+class Third(First, Second):
+    def __init__(self):
+        super(Third, self).__init__()
+        print ""that's it""
+
+What I don't get is: will the Third() class inherit both constructor methods? If yes, then which one will be run with super() and why?
+And what if you want to run the other one? I know it has something to do with Python method resolution order (MRO). 
+","This is to how I solved to issue of having multiple inheritance with different variables for initialization and having multiple MixIns with the same function call.  I had to explicitly add variables to passed **kwargs and add a MixIn interface to be an endpoint for super calls.
+Here A is an extendable base class and B and C are MixIn classes both who provide function f.  A and B both expect parameter v in their __init__ and C expects w.
+The function f takes one parameter y.  Q inherits from all three classes. MixInF is the mixin interface for B and C.
+
+IPython NoteBook Of This Code
+Github Repo with code example
+
+
+class A(object):
+    def __init__(self, v, *args, **kwargs):
+        print ""A:init:v[{0}]"".format(v)
+        kwargs['v']=v
+        super(A, self).__init__(*args, **kwargs)
+        self.v = v
+
+
+class MixInF(object):
+    def __init__(self, *args, **kwargs):
+        print ""IObject:init""
+    def f(self, y):
+        print ""IObject:y[{0}]"".format(y)
+
+
+class B(MixInF):
+    def __init__(self, v, *args, **kwargs):
+        print ""B:init:v[{0}]"".format(v)
+        kwargs['v']=v
+        super(B, self).__init__(*args, **kwargs)
+        self.v = v
+    def f(self, y):
+        print ""B:f:v[{0}]:y[{1}]"".format(self.v, y)
+        super(B, self).f(y)
+
+
+class C(MixInF):
+    def __init__(self, w, *args, **kwargs):
+        print ""C:init:w[{0}]"".format(w)
+        kwargs['w']=w
+        super(C, self).__init__(*args, **kwargs)
+        self.w = w
+    def f(self, y):
+        print ""C:f:w[{0}]:y[{1}]"".format(self.w, y)
+        super(C, self).f(y)
+
+
+class Q(C,B,A):
+    def __init__(self, v, w):
+        super(Q, self).__init__(v=v, w=w)
+    def f(self, y):
+        print ""Q:f:y[{0}]"".format(y)
+        super(Q, self).f(y)
+
+"
+"I made a function which will look up ages in dictionary and show the matching name:
+list = {'george':16,'amber':19}
+search_age = raw_input(""Provide age"")
+for age in list.values():
+    if age == search_age:
+        name = list[age]
+        print name
+
+I know how to compare and find the age I just don't know how to show the name of the person. Additionally, I am getting a KeyError because of line 5. I know it's not correct but I can't figure out to make it search backwards.
+","I thought it would be interesting to point out which methods are the quickest, and in what scenario:
+Here's some tests I ran (on a 2012 MacBook Pro)
+>>> def method1(list,search_age):
+...     for name,age in list.iteritems():
+...             if age == search_age:
+...                     return name
+... 
+>>> def method2(list,search_age):
+...     return [name for name,age in list.iteritems() if age == search_age]
+... 
+>>> def method3(list,search_age):
+...     return list.keys()[list.values().index(search_age)]
+
+Results from profile.run() on each method 100000 times:
+Method 1:
+>>> profile.run(""for i in range(0,100000): method1(list,16)"")
+     200004 function calls in 1.173 seconds
+
+Method 2:
+>>> profile.run(""for i in range(0,100000): method2(list,16)"")
+     200004 function calls in 1.222 seconds
+
+Method 3:
+>>> profile.run(""for i in range(0,100000): method3(list,16)"")
+     400004 function calls in 2.125 seconds
+
+So this shows that for a small dict, method 1 is the quickest. This is most likely because it returns the first match, as opposed to all of the matches like method 2 (see note below).
+
+Interestingly, performing the same tests on a dict I have with 2700 entries, I get quite different results (this time run 10000 times):
+Method 1:
+>>> profile.run(""for i in range(0,10000): method1(UIC_CRS,'7088380')"")
+     20004 function calls in 2.928 seconds
+
+Method 2:
+>>> profile.run(""for i in range(0,10000): method2(UIC_CRS,'7088380')"")
+     20004 function calls in 3.872 seconds
+
+Method 3:
+>>> profile.run(""for i in range(0,10000): method3(UIC_CRS,'7088380')"")
+     40004 function calls in 1.176 seconds
+
+So here, method 3 is much faster. Just goes to show the size of your dict will affect which method you choose.
+Notes:
+Method 2 returns a list of all names, whereas methods 1 and 3 return only the first match.
+I have not considered memory usage. I'm not sure if method 3 creates 2 extra lists (keys() and values()) and stores them in memory.
+"
+"How can I make two decorators in Python that would do the following?
+@makebold
+@makeitalic
+def say():
+   return ""Hello""
+
+...which should return:
+""<b><i>Hello</i></b>""
+
+I'm not trying to make HTML this way in a real application - just trying to understand how decorators and decorator chaining works.
+","Another way of doing the same thing:
+class bol(object):
+  def __init__(self, f):
+    self.f = f
+  def __call__(self):
+    return ""<b>{}</b>"".format(self.f())
+
+class ita(object):
+  def __init__(self, f):
+    self.f = f
+  def __call__(self):
+    return ""<i>{}</i>"".format(self.f())
+
+@bol
+@ita
+def sayhi():
+  return 'hi'
+
+Or, more flexibly:
+class sty(object):
+  def __init__(self, tag):
+    self.tag = tag
+  def __call__(self, f):
+    def newf():
+      return ""<{tag}>{res}</{tag}>"".format(res=f(), tag=self.tag)
+    return newf
+
+@sty('b')
+@sty('i')
+def sayhi():
+  return 'hi'
+
+"
+"Does time.time() in the Python time module return the system's time or the time in UTC?
+","Based on the answer from #squiguy, to get a true timestamp I would type cast it from float. 
+>>> import time
+>>> ts = int(time.time())
+>>> print(ts)
+1389177318
+
+At least that's the concept.
+"
+"Can someone explain to me the difference between doing:
+class Child(SomeBaseClass):
+    def __init__(self):
+        super(Child, self).__init__()
+
+and this:
+class Child(SomeBaseClass):
+    def __init__(self):
+        SomeBaseClass.__init__(self)
+
+I've seen super being used quite a lot in classes with only single inheritance. I can see why you'd use it in multiple inheritance but am unclear as to what the advantages are of using it in this kind of situation.
+","
+Can someone explain to me the difference between doing:
+class Child(SomeBaseClass):
+    def __init__(self):
+        super(Child, self).__init__()
+
+and this:
+class Child(SomeBaseClass):
+    def __init__(self):
+        SomeBaseClass.__init__(self)
+
+
+Indirection with Forward Compatibility
+What does it give you? For single inheritance, the above is practically identical from a static analysis point of view. However, using super gives you a layer of indirection with forward compatibility.
+Forward compatibility is very important to seasoned developers. You want your code to keep working with minimal changes as you change it. When you look at your revision history, you want to see precisely what changed when. 
+You may start off with single inheritance, but if you decide to add another base class, you only have to change the line with the bases - if the bases change in a class you inherit from (say a mixin is added) you'd change nothing in this class. Particularly in Python 2, getting the arguments to super and the correct method arguments right can be difficult. If you know you're using super correctly with single inheritance, that makes debugging less difficult going forward.
+Dependency Injection
+Other people can use your code and inject parents into the method resolution:
+class SomeBaseClass(object):
+    def __init__(self):
+        print('SomeBaseClass.__init__(self) called')
+
+class UnsuperChild(SomeBaseClass):
+    def __init__(self):
+        print('Child.__init__(self) called')
+        SomeBaseClass.__init__(self)
+
+class SuperChild(SomeBaseClass):
+    def __init__(self):
+        print('SuperChild.__init__(self) called')
+        super(SuperChild, self).__init__()
+
+Say you add another class to your object, and want to inject a class between Foo and Bar (for testing or some other reason):
+class InjectMe(SomeBaseClass):
+    def __init__(self):
+        print('InjectMe.__init__(self) called')
+        super(InjectMe, self).__init__()
+
+class UnsuperInjector(UnsuperChild, InjectMe): pass
+
+class SuperInjector(SuperChild, InjectMe): pass
+
+Using the un-super child fails to inject the dependency because the child you're using has hard-coded the method to be called after its own:
+>>> o = UnsuperInjector()
+UnsuperChild.__init__(self) called
+SomeBaseClass.__init__(self) called
+
+However, the class with the child that uses super can correctly inject the dependency:
+>>> o2 = SuperInjector()
+SuperChild.__init__(self) called
+InjectMe.__init__(self) called
+SomeBaseClass.__init__(self) called
+
+Conclusion
+Always use super to reference the parent class. 
+What you intend is to reference the parent class that is next-in-line, not specifically the one you see the child inheriting from.
+Not using super can put unnecessary constraints on users of your code.
+"
+"How do I copy a file in Python? I couldn't find anything under os.
+","Directory and File copy example - From Tim Golden's Python Stuff:
+http://timgolden.me.uk/python/win32_how_do_i/copy-a-file.html
+import os
+import shutil
+import tempfile
+
+filename1 = tempfile.mktemp ("".txt"")
+open (filename1, ""w"").close ()
+filename2 = filename1 + "".copy""
+print filename1, ""=>"", filename2
+
+shutil.copy (filename1, filename2)
+
+if os.path.isfile (filename2): print ""Success""
+
+dirname1 = tempfile.mktemp ("".dir"")
+os.mkdir (dirname1)
+dirname2 = dirname1 + "".copy""
+print dirname1, ""=>"", dirname2
+
+shutil.copytree (dirname1, dirname2)
+
+if os.path.isdir (dirname2): print ""Success""
+
+"
+"I'm trying to convert a longish hollow ""data"" class into a named tuple. My class currently looks like this:
+class Node(object):
+    def __init__(self, val, left=None, right=None):
+        self.val = val
+        self.left = left
+        self.right = right
+
+After conversion to namedtuple it looks like:
+from collections import namedtuple
+Node = namedtuple('Node', 'val left right')
+
+But there is a problem here. My original class allowed me to pass in just a value and took care of the default by using default values for the named/keyword arguments. Something like:
+class BinaryTree(object):
+    def __init__(self, val):
+        self.root = Node(val)
+
+But this doesn't work in the case of my refactored named tuple since it expects me to pass all the fields. I can of course replace the occurrences of Node(val) to Node(val, None, None) but it isn't to my liking.
+So does there exist a good trick which can make my re-write successful without adding a lot of code complexity (metaprogramming) or should I just swallow the pill and go ahead with the ""search and replace""? :)
+TIA
+-- sauke
+","I subclassed namedtuple and overrode the __new__ method:
+from collections import namedtuple
+
+class Node(namedtuple('Node', ['value', 'left', 'right'])):
+    __slots__ = ()
+    def __new__(cls, value, left=None, right=None):
+        return super(Node, cls).__new__(cls, value, left, right)
+
+This preserves an intuitive type hierarchy, which the creation of a factory function disguised as a class does not.
+"
+"I have the following code to do this, but how can I do it better? Right now I think it's better than nested loops, but it starts to get Perl-one-linerish when you have a generator in a list comprehension. 
+day_count = (end_date - start_date).days + 1
+for single_date in [d for d in (start_date + timedelta(n) for n in range(day_count)) if d <= end_date]:
+    print strftime(""%Y-%m-%d"", single_date.timetuple())
+
+Notes
+
+I'm not actually using this to print. That's just for demo purposes. 
+The start_date and end_date variables are datetime.date objects because I don't need the timestamps. (They're going to be used to generate a report).
+
+Sample Output
+For a start date of 2009-05-30 and an end date of 2009-06-09:
+2009-05-30
+2009-05-31
+2009-06-01
+2009-06-02
+2009-06-03
+2009-06-04
+2009-06-05
+2009-06-06
+2009-06-07
+2009-06-08
+2009-06-09
+
+","Why not try:
+import datetime as dt
+
+start_date = dt.datetime(2012, 12,1)
+end_date = dt.datetime(2012, 12,5)
+
+total_days = (end_date - start_date).days + 1 #inclusive 5 days
+
+for day_number in range(total_days):
+    current_date = (start_date + dt.timedelta(days = day_number)).date()
+    print current_date
+
+"
+"I am writing a program that must accept input from the user.
+#note: Python 2.7 users should use `raw_input`, the equivalent of 3.X's `input`
+age = int(input(""Please enter your age: ""))
+if age >= 18: 
+    print(""You are able to vote in the United States!"")
+else:
+    print(""You are not able to vote in the United States."")
+
+This works as expected if the user enters sensible data. 
+C:\Python\Projects> canyouvote.py
+Please enter your age: 23
+You are able to vote in the United States!
+
+But if they make a mistake, then it crashes:
+C:\Python\Projects> canyouvote.py
+Please enter your age: dickety six
+Traceback (most recent call last):
+  File ""canyouvote.py"", line 1, in <module>
+    age = int(input(""Please enter your age: ""))
+ValueError: invalid literal for int() with base 10: 'dickety six'
+
+Instead of crashing, I would like it to try getting the input again. Like this:
+C:\Python\Projects> canyouvote.py
+Please enter your age: dickety six
+Sorry, I didn't understand that.
+Please enter your age: 26
+You are able to vote in the United States!
+
+How can I accomplish this? What if I also wanted to reject values like -1, which is a valid int, but nonsensical in this context?
+","The simplest way to accomplish this would be to put the input method in a while loop. Use continue when you get bad input, and break out of the loop when you're satisfied.
+When Your Input Might Raise an Exception
+Use try and catch to detect when the user enters data that can't be parsed.
+while True:
+    try:
+        # Note: Python 2.x users should use raw_input, the equivalent of 3.x's input
+        age = int(input(""Please enter your age: ""))
+    except ValueError:
+        print(""Sorry, I didn't understand that."")
+        #better try again... Return to the start of the loop
+        continue
+    else:
+        #age was successfully parsed!
+        #we're ready to exit the loop.
+        break
+if age >= 18: 
+    print(""You are able to vote in the United States!"")
+else:
+    print(""You are not able to vote in the United States."")
+
+Implementing Your Own Validation Rules
+If you want to reject values that Python can successfully parse, you can add your own validation logic.
+while True:
+    data = input(""Please enter a loud message (must be all caps): "")
+    if not data.isupper():
+        print(""Sorry, your response was not loud enough."")
+        continue
+    else:
+        #we're happy with the value given.
+        #we're ready to exit the loop.
+        break
+
+while True:
+    data = input(""Pick an answer from A to D:"")
+    if data.lower() not in ('a', 'b', 'c', 'd'):
+        print(""Not an appropriate choice."")
+    else:
+        break
+
+Combining Exception Handling and Custom Validation
+Both of the above techniques can be combined into one loop.
+while True:
+    try:
+        age = int(input(""Please enter your age: ""))
+    except ValueError:
+        print(""Sorry, I didn't understand that."")
+        continue
+
+    if age < 0:
+        print(""Sorry, your response must not be negative."")
+        continue
+    else:
+        #age was successfully parsed, and we're happy with its value.
+        #we're ready to exit the loop.
+        break
+if age >= 18: 
+    print(""You are able to vote in the United States!"")
+else:
+    print(""You are not able to vote in the United States."")
+
+Encapsulating it All in a Function
+If you need to ask your user for a lot of different values, it might be useful to put this code in a function, so you don't have to retype it every time.
+def get_non_negative_int(prompt):
+    while True:
+        try:
+            value = int(input(prompt))
+        except ValueError:
+            print(""Sorry, I didn't understand that."")
+            continue
+
+        if value < 0:
+            print(""Sorry, your response must not be negative."")
+            continue
+        else:
+            break
+    return value
+
+age = get_non_negative_int(""Please enter your age: "")
+kids = get_non_negative_int(""Please enter the number of children you have: "")
+salary = get_non_negative_int(""Please enter your yearly earnings, in dollars: "")
+
+Putting it all together
+You can extend this idea to make a very generic input function:
+def sanitised_input(prompt, type_=None, min_=None, max_=None, range_=None): 
+    if min_ is not None and max_ is not None and max_ < min_: 
+        raise ValueError(""min_ must be less than or equal to max_."") 
+    while True: 
+        ui = input(prompt) 
+        if type_ is not None: 
+            try: 
+                ui = type_(ui) 
+            except ValueError: 
+                print(""Input type must be {0}."".format(type_.__name__)) 
+                continue
+        if max_ is not None and ui > max_: 
+            print(""Input must be less than or equal to {0}."".format(max_)) 
+        elif min_ is not None and ui < min_: 
+            print(""Input must be greater than or equal to {0}."".format(min_)) 
+        elif range_ is not None and ui not in range_: 
+            if isinstance(range_, range): 
+                template = ""Input must be between {0.start} and {0.stop}.""
+                print(template.format(range_)) 
+            else: 
+                template = ""Input must be {0}.""
+                if len(range_) == 1: 
+                    print(template.format(*range_)) 
+                else: 
+                    print(template.format("" or "".join(("", "".join(map(str, 
+                                                                     range_[:-1])), 
+                                                       str(range_[-1]))))) 
+        else: 
+            return ui 
+
+With usage such as:
+age = sanitised_input(""Enter your age: "", int, 1, 101)
+answer = sanitised_input(""Enter your answer"", str.lower, range_=('a', 'b', 'c', 'd'))
+
+Common Pitfalls, and Why you Should Avoid Them
+The Redundant Use of Redundant input Statements
+This method works but is generally considered poor style:
+data = input(""Please enter a loud message (must be all caps): "")
+while not data.isupper():
+    print(""Sorry, your response was not loud enough."")
+    data = input(""Please enter a loud message (must be all caps): "")
+
+It might look attractive initially because it's shorter than the while True method, but it violates the Don't Repeat Yourself principle of software development. This increases the likelihood of bugs in your system. What if you want to backport to 2.7 by changing input to raw_input, but accidentally change only the first input above? It's a SyntaxError just waiting to happen.
+Recursion Will Blow Your Stack
+If you've just learned about recursion, you might be tempted to use it in get_non_negative_int so you can dispose of the while loop.
+def get_non_negative_int(prompt):
+    try:
+        value = int(input(prompt))
+    except ValueError:
+        print(""Sorry, I didn't understand that."")
+        return get_non_negative_int(prompt)
+
+    if value < 0:
+        print(""Sorry, your response must not be negative."")
+        return get_non_negative_int(prompt)
+    else:
+        return value
+
+This appears to work fine most of the time, but if the user enters invalid data enough times, the script will terminate with a RuntimeError: maximum recursion depth exceeded. You may think ""no fool would make 1000 mistakes in a row"", but you're underestimating the ingenuity of fools!
+"
+"I'd like to grab daily sunrise/sunset times from a web site. Is it possible to scrape web content with Python? what are the modules used? Is there any tutorial available?
+","I'd really recommend Scrapy, for reasons being elaborated in this question - ""Is it worth learning Scrapy?"".
+Quote from the answer:
+
+
+Scrapy crawling is fastest than mechanize because uses asynchronous operations (on top of Twisted).
+Scrapy has better and fastest support for parsing (x)html on top of libxml2.
+Scrapy is a mature framework with full unicode, handles redirections, gzipped responses, odd encodings, integrated http cache, etc.
+Once you are into Scrapy, you can write a spider in less than 5 minutes that download images, creates thumbnails and export the extracted data directly to csv or json.
+
+
+"
+"In Python, how do I get a function name as a string without calling the function?
+def my_function():
+    pass
+
+print get_function_name_as_string(my_function) # my_function is not in quotes
+
+should output ""my_function"".
+Is this available in python? If not, any idea how to write get_function_name_as_string in Python?
+","This function will return the caller's function name.
+def func_name():
+    import traceback
+    return traceback.extract_stack(None, 2)[0][2]
+
+It is like Albert Vonpupp's answer with a friendly wrapper.
+"
+"I have used hashlib (which replaces md5 in Python 2.6/3.0) and it worked fine if I opened a file and put its content in hashlib.md5() function.
+The problem is with very big files that their sizes could exceed RAM size.
+How to get the MD5 hash of a file without loading the whole file to memory?
+","Here's my version of @Piotr Czapla's method:
+def md5sum(filename):
+    md5 = hashlib.md5()
+    with open(filename, 'rb') as f:
+        for chunk in iter(lambda: f.read(128 * md5.block_size), b''):
+            md5.update(chunk)
+    return md5.hexdigest()
+
+"
+"I have a list of arbitrary length, and I need to split it up into equal size chunks and operate on it. There are some obvious ways to do this, like keeping a counter and two lists, and when the second list fills up, add it to the first list and empty the second list for the next round of data, but this is potentially extremely expensive.
+I was wondering if anyone had a good solution to this for lists of any length, e.g. using generators.
+This should work:
+l = range(1, 1000)
+print chunks(l, 10) -> [ [ 1..10 ], [ 11..20 ], .., [ 991..999 ] ]
+
+I was looking for something useful in itertools but I couldn't find anything obviously useful. Might've missed it, though.
+Related question: What is the most âpythonicâ way to iterate over a list in chunks?
+","I saw the most awesome Python-ish answer in a duplicate of this question:
+l = range(1,15)
+i = iter(l)
+print zip(i,i,i)
+
+You can create n-tuple for any n.
+"
+"Python 2.6 introduced the str.format() method with a slightly different syntax from the existing % operator. Which is better and for what situations?
+
+The following uses each method and has the same outcome, so what is the difference?
+#!/usr/bin/python
+sub1 = ""python string!""
+sub2 = ""an arg""
+
+a = ""i am a %s"" % sub1
+b = ""i am a {0}"".format(sub1)
+
+c = ""with %(kwarg)s!"" % {'kwarg':sub2}
+d = ""with {kwarg}!"".format(kwarg=sub2)
+
+print a    # ""i am a python string!""
+print b    # ""i am a python string!""
+print c    # ""with an arg!""
+print d    # ""with an arg!""
+
+Furthermore when does string formatting occur in Python? For example, if my logging level is set to HIGH will I still take a hit for performing the following % operation? And if so, is there a way to avoid this?
+log.debug(""some debug info: %s"" % some_info)
+
+
+","But please be careful, just now I've discovered one issue when trying to replace all % with .format in existing code: '{}'.format(unicode_string) will try to encode unicode_string and will probably fail.
+Just look at this Python interactive session log:
+Python 2.7.2 (default, Aug 27 2012, 19:52:55) 
+[GCC 4.1.2 20080704 (Red Hat 4.1.2-48)] on linux2
+; s='Ð¹'
+; u=u'Ð¹'
+; s
+'\xd0\xb9'
+; u
+u'\u0439'
+
+s is just a string (called 'byte array' in Python3) and u is a Unicode string (called 'string' in Python3):
+; '%s' % s
+'\xd0\xb9'
+; '%s' % u
+u'\u0439'
+
+When you give a Unicode object as a parameter to % operator it will produce a Unicode string even if the original string wasn't Unicode:
+; '{}'.format(s)
+'\xd0\xb9'
+; '{}'.format(u)
+Traceback (most recent call last):
+  File ""<stdin>"", line 1, in <module>
+UnicodeEncodeError: 'latin-1' codec can't encode character u'\u0439' in position 0: ordinal not in range(256)
+
+but the .format function will raise ""UnicodeEncodeError"":
+; u'{}'.format(s)
+u'\xd0\xb9'
+; u'{}'.format(u)
+u'\u0439'
+
+and it will work with a Unicode argument fine only if the original string was Unicode.
+; '{}'.format(u'i')
+'i'
+
+or if argument string can be converted to a string (so called 'byte array')
+"
+"I want to be able to get the whole POST body of the request as a string or file handle that I can read but I'm unable to find a way (I'm new to Flask and Python for web at all). This is what I got:
+from flask import Flask
+
+app = Flask(__name__)
+@app.route('/', methods=['GET', 'POST'])
+def parse_request():
+    # obtain the whole post body here, in case the request is post...
+
+AS THIS QUESTION IS GETTING MANY VIEWS:
+The answer to the question linked below is telling a way that works only if the content-type is not recognised, this one instead is asking how to get the whole raw post body regardless of the headers:
+Get raw POST body in Python Flask regardless of Content-Type header
+","The docs describe the attributes available on the request.  In most common cases request.data will be empty because it's used as a fallback:
+
+request.data Contains the incoming request data as string in case it came with a mimetype Flask does not handle.
+
+
+request.args: the key/value pairs in the URL query string
+request.form: the key/value pairs in the body, as sent by a HTML POST form
+request.files: the files in the body, which Flask keeps separate from form
+request.values: combined args and form, preferring args if keys overlap
+
+"
+"I am trying to run a Django management command from cron. I am using virtualenv to keep my project sandboxed.
+I have seen examples here and elsewhere that show running management commands from within virtualenv's like:
+0 3 * * * source /home/user/project/env/bin/activate && /home/user/project/manage.py command arg
+
+However, even though syslog shows an entry when the task should have started, this task never actually runs (the log file for the script is empty). If I run the line manually from the shell, it works as expected. 
+The only way I can currently get the command to run via cron, is to break the commands up and put them in a dumb bash wrapper script:
+#!/bin/sh
+source /home/user/project/env/bin/activate
+cd /home/user/project/
+./manage.py command arg
+
+Please enlighten me what the difference is. What am I missing?
+Thanks
+EDIT:
+ars came up with a working combination of commands:
+0 3 * * * cd /home/user/project && /home/user/project/env/bin/python /home/user/project/manage.py command arg
+
+At least in my case, invoking the activate script for the virtualenv did nothing. This works, so on with the show.
+","Running source from a cronfile won't work as cron uses /bin/sh as its default shell, which doesn't support source.  You need to set the SHELL environment variable to be /bin/bash:
+SHELL=/bin/bash
+*/10 * * * * root source /path/to/virtualenv/bin/activate && /path/to/build/manage.py some_command > /dev/null
+
+It's tricky to spot why this fails as /var/log/syslog doesn't log the error details.  Best to alias yourself to root so you get emailed with any cron errors.  Simply add yourself to /etc/aliases and run sendmail -bi.
+More info here:
+http://codeinthehole.com/archives/43-Running-django-cronjobs-within-a-virtualenv.html
+"
+"Is there a function to extract the extension from a filename?
+","I'm surprised no one has mentioned pathlib yet, pathlib IS awesome!
+NOTE: You require to have Python 3.4 at least though!
+import pathlib
+
+print(pathlib.Path('yourPathGoesHere').suffix)
+
+And if you want to get all the suffixes (for instance if you have a .tar.gz), .suffixes will return a list of them! Neat!
+"
+"Whenever I use sys.path.append, the new directory will be added. However, once I close python, the list will revert to the previous (default?) values. How do I permanently add a directory to PYTHONPATH?
+","This works on Windows
+
+On Windows, with Python 2.7 go to the Python setup folder.
+Open Lib/site-packages.
+Add an example.pth empty file to this folder.
+Add the required path to the file, one per each line.
+
+Then you'll be able to see all modules within those paths from your scripts.
+"
+"How can I list all files of a directory in python and add them to a list?
+","A one-line solution to get only list of files (no subdirectories):
+filenames = next(os.walk(path))[2]
+
+or absolute pathnames:
+paths = [os.path.join(path,fn) for fn in next(os.walk(path))[2]]
+
+"
+"There is no built in reverse function in Python's str object. What is the best way of implementing this?
+If supplying a very concise answer, please elaborate on it's efficiency. Is the str converted to a different object, etc. 
+","Quick Answer (TL;DR)
+Example
+### example01 -------------------
+mystring  =   'coup_ate_grouping'
+backwards =   mystring[::-1]
+print backwards
+
+### ... or even ...
+mystring  =   'coup_ate_grouping'[::-1]
+print mystring
+
+### result01 -------------------
+'''
+gnipuorg_eta_puoc
+'''
+
+Detailed Answer
+Background
+This answer is provided to address the following concern from a user odigity:
+
+Wow. I was horrified at first by the solution Paolo proposed, but that 
+  took a back seat to the horror I felt upon reading the first
+  comment: ""That's very pythonic. Good job!"" I'm so disturbed that such
+  a bright community thinks using such cryptic methods for something so
+  basic is a good idea. Why isn't it just s.reverse()?
+
+Problem
+
+Context
+
+Python 2.x
+Python 3.x
+
+Scenario:
+
+Developer wants to transform a string
+Transformation is to reverse order of all the characters
+
+
+Solution
+
+example01 produces the desired result, using extended slice notation.        
+
+Pitfalls
+
+Developer might expect something like string.reverse()
+The native idiomatic (aka ""pythonic"") solution may not be readable to newer developers
+Developer may be tempted to implement his or her own version of string.reverse() to avoid slice notation.
+The output of slice notation may be counter-intuitive in some cases:
+
+
+see e.g., example02
+
+
+print 'coup_ate_grouping'[-4:]    ## => 'ping'
+compared to
+print 'coup_ate_grouping'[-4:-1]  ## => 'pin'
+compared to
+print 'coup_ate_grouping'[-1]  ## => 'g'
+
+the different outcomes of indexing on [-1] may throw some developers off
+
+
+Rationale
+Python has a special circumstance to be aware of: a string is an iterable type.
+One rationale for excluding a string.reverse() method is to give python developers incentive to leverage the power of this special circumstance.
+In simplified terms, this simply means each individual character in a string can be easily operated on as a part of a sequential array of elements, just like arrays in other programming languages.
+To understand how this works, reviewing example02 can provide a good overview.
+Example02
+### example02 -------------------
+## start (with positive integers)
+print 'coup_ate_grouping'[0]  ## => 'c'
+print 'coup_ate_grouping'[1]  ## => 'o' 
+print 'coup_ate_grouping'[2]  ## => 'u' 
+
+## start (with negative integers)
+print 'coup_ate_grouping'[-1]  ## => 'g'
+print 'coup_ate_grouping'[-2]  ## => 'n' 
+print 'coup_ate_grouping'[-3]  ## => 'i' 
+
+## start:end 
+print 'coup_ate_grouping'[0:4]    ## => 'coup'    
+print 'coup_ate_grouping'[4:8]    ## => '_ate'    
+print 'coup_ate_grouping'[8:12]   ## => '_gro'    
+
+## start:end 
+print 'coup_ate_grouping'[-4:]    ## => 'ping' (counter-intuitive)
+print 'coup_ate_grouping'[-4:-1]  ## => 'pin'
+print 'coup_ate_grouping'[-4:-2]  ## => 'pi'
+print 'coup_ate_grouping'[-4:-3]  ## => 'p'
+print 'coup_ate_grouping'[-4:-4]  ## => ''
+print 'coup_ate_grouping'[0:-1]   ## => 'coup_ate_groupin'
+print 'coup_ate_grouping'[0:]     ## => 'coup_ate_grouping' (counter-intuitive)
+
+## start:end:step (or stop:end:stride)
+print 'coup_ate_grouping'[-1::1]  ## => 'g'   
+print 'coup_ate_grouping'[-1::-1] ## => 'gnipuorg_eta_puoc'
+
+## combinations
+print 'coup_ate_grouping'[-1::-1][-4:] ## => 'puoc'
+
+Conclusion
+The cognitive load associated with understanding how slice notation works in python may indeed be too much for some adopters and developers who do not wish to invest much time in learning the language.
+Nevertheless, once the basic principles are understood, the power of this approach over fixed string manipulation methods can be quite favorable.
+For those who think otherwise, there are alternate approaches, such as lambda functions, iterators, or simple one-off function declarations.
+If desired, a developer can implement her own string.reverse() method, however it is good to understand the rationale behind this ""quirk"" of python.
+See also
+
+alternate simple approach
+alternate simple approach
+alternate explanation of slice notation 
+
+"
+"Not obvious from the flask documention on how to get the query string. I am new, looked at the docs, could not find!   
+So
+@app.route('/')
+@app.route('/data')
+def data():
+    query_string=??????
+    return render_template(""data.html"")
+
+","Werkzeug/Flask as already parsed everything for you. No need to do the same work again with urlparse:
+from flask import request
+
+@app.route('/')
+@app.route('/data')
+def data():
+    query_string = request.query_string  ## There is it
+    return render_template(""data.html"")
+
+The full documentation for the request and response objects is in Werkzeug: http://werkzeug.pocoo.org/docs/wrappers/
+"
+"I am learning the ropes in Python. When I try to print an object of class Foobar using the print() function, I get an output like this:
+<__main__.Foobar instance at 0x7ff2a18c>
+
+Is there a way I can set the printing behaviour (or the string representation) of a class and its objects? For instance, when I call print() on a class object, I would like to print its data members in a certain format. How to achieve this in Python?
+If you are familiar with C++ classes, the above can be achieved for the standard ostream by adding a friend ostream& operator << (ostream&, const Foobar&) method for the class.
+","You need to use __repr__. This is a standard function like __init__.
+For example:
+class Foobar():
+    """"""This will create Foobar type object.""""""
+
+    def __init__(self):
+        print ""Foobar object is created.""
+
+    def __repr__(self):
+        return ""Type what do you want to see here.""
+
+a = Foobar()
+
+print a
+
+"
+"filter, map, and reduce work perfectly in Python 2. Here is an example:
+>>> def f(x):
+        return x % 2 != 0 and x % 3 != 0
+>>> filter(f, range(2, 25))
+[5, 7, 11, 13, 17, 19, 23]
+
+>>> def cube(x):
+        return x*x*x
+>>> map(cube, range(1, 11))
+[1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]
+
+>>> def add(x,y):
+        return x+y
+>>> reduce(add, range(1, 11))
+55
+
+But in Python 3, I receive the following outputs:
+>>> filter(f, range(2, 25))
+<filter object at 0x0000000002C14908>
+>>> map(cube, range(1, 11))
+<map object at 0x0000000002C82B70>
+>>> reduce(add, range(1, 11))
+Traceback (most recent call last):
+  File ""<pyshell#8>"", line 1, in <module>
+    reduce(add, range(1, 11))
+NameError: name 'reduce' is not defined
+
+I would appreciate if someone could explain to me why this is.
+Screenshot of code for further clarity:
+
+","You can read about the changes in What's New In Python 3.0. You should read it thoroughly when you move from 2.x to 3.x since a lot has been changed.
+The whole answer here are quotes from the documentation.
+Views And Iterators Instead Of Lists
+
+Some well-known APIs no longer return lists:
+
+[...]
+map() and filter() return iterators. If you really need a list, a quick fix is e.g. list(map(...)), but a better fix is often to use a list comprehension (especially when the original code uses lambda), or rewriting the code so it doesnât need a list at all. Particularly tricky is map() invoked for the side effects of the function; the correct transformation is to use a regular for loop (since creating a list would just be wasteful).
+[...]
+
+
+Builtins
+
+
+[...]
+Removed reduce(). Use functools.reduce() if you really need it; however, 99 percent of the time an explicit for loop is more readable.
+[...]
+
+
+"
+"I am writing a project in Django and I see that 80% of the code is in the file models.py. This code is confusing and, after a certain time, I cease to understand what is really happening.
+Here is what bothers me:
+
+I find it ugly that my model level (which was supposed to be
+responsible only for the work with data from a database) is also
+sending email, walking on api to other services, etc. 
+Also, I find it unacceptable to place business logic in the view, because
+this way it becomes difficult to control. For example, in my
+application there are at least three ways to create new
+instances of User, but technically it should create them uniformally. 
+I do not always notice when the methods and
+properties of my models become non-deterministic and when they develop
+side effects.
+
+Here is a simple example. At first, the User model was like this:
+class User(db.Models):
+
+    def get_present_name(self):
+        return self.name or 'Anonymous'
+
+    def activate(self):
+        self.status = 'activated'
+        self.save()
+
+Over time, it turned into this:
+class User(db.Models):
+
+    def get_present_name(self): 
+        # property became non-deterministic in terms of database
+        # data is taken from another service by api
+        return remote_api.request_user_name(self.uid) or 'Anonymous' 
+
+    def activate(self):
+        # method now has a side effect (send message to user)
+        self.status = 'activated'
+        self.save()
+        send_mail('Your account is activated!', 'â¦', [self.email])
+
+What I want is to separate entities in my code:
+
+Entities of my database, database level: What contains my application?
+Entities of my application, business logic level: What can make my application?
+
+What are the good practices to implement such an approach that can be applied in Django?
+","I usually implement a service layer in between views and models. This acts like your project's API and gives you a good helicopter view of what is going on. I inherited this practice from a colleague of mine that uses this layering technique a lot with Java projects (JSF), e.g:
+models.py 
+class Book:
+   author = models.ForeignKey(User)
+   title = models.CharField(max_length=125)
+
+   class Meta:
+       app_label = ""library""
+
+services.py
+from library.models import Book
+
+def get_books(limit=None, **filters):
+    """""" simple service function for retrieving books can be widely extended """"""
+    if limit:
+        return Book.objects.filter(**filters)[:limit]
+    return Book.objects.filter(**filters)
+
+views.py
+from library.services import get_books
+
+class BookListView(ListView):
+    """""" simple view, e.g. implement a _build and _apply filters function """"""
+    queryset = get_books()
+
+
+Mind you, I usually take models, views and services to module level and
+  separate even further depending on the project's size
+
+"
+"I want to delete the file filename if it exists.  Is it proper to say
+if os.path.exists(filename):
+    os.remove(filename)
+
+Is there a better way? A one-line way? 
+","In the spirit of Andy Jones' answer, how about an authentic ternary operation:
+os.remove(fn) if os.path.exists(fn) else None
+
+"
+"What is the use of the yield keyword in Python? What does it do?
+For example, I'm trying to understand this code1:
+def _get_child_candidates(self, distance, min_dist, max_dist):
+    if self._leftchild and distance - max_dist < self._median:
+        yield self._leftchild
+    if self._rightchild and distance + max_dist >= self._median:
+        yield self._rightchild  
+
+And this is the caller:
+result, candidates = list(), [self]
+while candidates:
+    node = candidates.pop()
+    distance = node._get_dist(obj)
+    if distance <= max_dist and distance >= min_dist:
+        result.extend(node._values)
+    candidates.extend(node._get_child_candidates(distance, min_dist, max_dist))
+return result
+
+What happens when the method _get_child_candidates is called?
+A list is returned? A single element is returned? Is it called again? When will subsequent calls stop?
+
+
+1. The code comes from Jochen Schulz (jrschulz), who made a great Python library for metric spaces. This is the link to the complete source: Module mspace.
+","Here are some Python examples of how to actually implement generators as if Python did not provide syntactic sugar for them (or in a language without native syntax, like JavaScript). Snippets from that link is below.
+As a Python generator:
+from itertools import islice
+
+def fib_gen():
+    a, b = 1, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+assert [1, 1, 2, 3, 5] == list(islice(fib_gen(), 5))
+
+Using lexical closures instead of generators
+def ftake(fnext, last):
+    return [fnext() for _ in xrange(last)]
+
+def fib_gen2():
+    #funky scope due to python2.x workaround
+    #for python 3.x use nonlocal
+    def _():
+        _.a, _.b = _.b, _.a + _.b
+        return _.a
+    _.a, _.b = 0, 1
+    return _
+
+assert [1,1,2,3,5] == ftake(fib_gen2(), 5)
+
+Using object closures instead of generators (because ClosuresAndObjectsAreEquivalent)
+class fib_gen3:
+    def __init__(self):
+        self.a, self.b = 1, 1
+
+    def __call__(self):
+        r = self.a
+        self.a, self.b = self.b, self.a + self.b
+        return r
+
+assert [1,1,2,3,5] == ftake(fib_gen3(), 5)
+
+"
+"I am trying to implement a ""Digit Recognition OCR"" in OpenCV-Python (cv2). It is just for learning purposes. I would like to learn both KNearest and SVM features in OpenCV. 
+I have 100 samples (i.e. images) of each digit. I would like to train with them.
+There is a sample letter_recog.py that comes with OpenCV sample. But i still couldn't figure out on how to use it. I don't understand what are the samples, responses etc. Also, it loads a txt file at first, which i didn't understand first.
+Later on searching a little bit, i could find a letter_recognition.data in cpp samples. I used it and made a code for cv2.KNearest in the model of letter_recog.py (just for testing):
+import numpy as np
+import cv2
+
+fn = 'letter-recognition.data'
+a = np.loadtxt(fn, np.float32, delimiter=',', converters={ 0 : lambda ch : ord(ch)-ord('A') })
+samples, responses = a[:,1:], a[:,0]
+
+model = cv2.KNearest()
+retval = model.train(samples,responses)
+retval, results, neigh_resp, dists = model.find_nearest(samples, k = 10)
+print results.ravel()
+
+It gave me an array of size 20000, i don't understand what it is.
+Questions:
+1) What is letter_recognition.data file ? How to build that file from my own data set?
+2) What does results.reval() denote? 
+3) How we can write a simple digit recognition tool using letter_recognition.data file (either KNearest or SVM)?
+","For those who interested in C++ code can refer below code. 
+Thanks Abid Rahman for the nice explanation.
+
+The procedure is same as above but, the contour finding uses only first hierarchy level contour, so that the algorithm uses only outer contour for each digit.
+Code for creating sample and Label data
+//Process image to extract contour
+Mat thr,gray,con;
+Mat src=imread(""digit.png"",1);
+cvtColor(src,gray,CV_BGR2GRAY);
+threshold(gray,thr,200,255,THRESH_BINARY_INV); //Threshold to find contour
+thr.copyTo(con);
+
+// Create sample and label data
+vector< vector <Point> > contours; // Vector for storing contour
+vector< Vec4i > hierarchy;
+Mat sample;
+Mat response_array;  
+findContours( con, contours, hierarchy,CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE ); //Find contour
+
+for( int i = 0; i< contours.size(); i=hierarchy[i][0] ) // iterate through first hierarchy level contours
+{
+    Rect r= boundingRect(contours[i]); //Find bounding rect for each contour
+    rectangle(src,Point(r.x,r.y), Point(r.x+r.width,r.y+r.height), Scalar(0,0,255),2,8,0);
+    Mat ROI = thr(r); //Crop the image
+    Mat tmp1, tmp2;
+    resize(ROI,tmp1, Size(10,10), 0,0,INTER_LINEAR ); //resize to 10X10
+    tmp1.convertTo(tmp2,CV_32FC1); //convert to float
+    sample.push_back(tmp2.reshape(1,1)); // Store  sample data
+    imshow(""src"",src);
+    int c=waitKey(0); // Read corresponding label for contour from keyoard
+    c-=0x30;     // Convert ascii to intiger value
+    response_array.push_back(c); // Store label to a mat
+    rectangle(src,Point(r.x,r.y), Point(r.x+r.width,r.y+r.height), Scalar(0,255,0),2,8,0);    
+}
+
+// Store the data to file
+Mat response,tmp;
+tmp=response_array.reshape(1,1); //make continuous
+tmp.convertTo(response,CV_32FC1); // Convert  to float
+
+FileStorage Data(""TrainingData.yml"",FileStorage::WRITE); // Store the sample data in a file
+Data << ""data"" << sample;
+Data.release();
+
+FileStorage Label(""LabelData.yml"",FileStorage::WRITE); // Store the label data in a file
+Label << ""label"" << response;
+Label.release();
+cout<<""Training and Label data created successfully....!! ""<<endl;
+
+imshow(""src"",src);
+waitKey();
+
+Code for training and testing
+Mat thr,gray,con;
+Mat src=imread(""dig.png"",1);
+cvtColor(src,gray,CV_BGR2GRAY);
+threshold(gray,thr,200,255,THRESH_BINARY_INV); // Threshold to create input
+thr.copyTo(con);
+
+
+// Read stored sample and label for training
+Mat sample;
+Mat response,tmp;
+FileStorage Data(""TrainingData.yml"",FileStorage::READ); // Read traing data to a Mat
+Data[""data""] >> sample;
+Data.release();
+
+FileStorage Label(""LabelData.yml"",FileStorage::READ); // Read label data to a Mat
+Label[""label""] >> response;
+Label.release();
+
+
+KNearest knn;
+knn.train(sample,response); // Train with sample and responses
+cout<<""Training compleated.....!!""<<endl;
+
+vector< vector <Point> > contours; // Vector for storing contour
+vector< Vec4i > hierarchy;
+
+//Create input sample by contour finding and cropping
+findContours( con, contours, hierarchy,CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+Mat dst(src.rows,src.cols,CV_8UC3,Scalar::all(0));
+
+for( int i = 0; i< contours.size(); i=hierarchy[i][0] ) // iterate through each contour for first hierarchy level .
+{
+    Rect r= boundingRect(contours[i]);
+    Mat ROI = thr(r);
+    Mat tmp1, tmp2;
+    resize(ROI,tmp1, Size(10,10), 0,0,INTER_LINEAR );
+    tmp1.convertTo(tmp2,CV_32FC1);
+    float p=knn.find_nearest(tmp2.reshape(1,1), 1);
+    char name[4];
+    sprintf(name,""%d"",(int)p);
+    putText( dst,name,Point(r.x,r.y+r.height) ,0,1, Scalar(0, 255, 0), 2, 8 );
+}
+
+imshow(""src"",src);
+imshow(""dst"",dst);
+imwrite(""dest.jpg"",dst);
+waitKey();
+
+Result
+In the result the dot in the first line is detected as 8 and we havenât trained for dot. Also I am considering every contour in first hierarchy level as the sample input, user can avoid it by computing the area.  
+
+"
+"Using pip, is it possible to figure out which version of a package is currently installed?
+I know about pip install XYZ --upgrade but I am wondering if there is anything like pip info XYZ.  If not what would be the best way to tell what version I am currently using.
+","Pip 1.3 now also has a list command:
+$ pip list
+argparse (1.2.1)
+pip (1.5.1)
+setuptools (2.1)
+wsgiref (0.1.2)
+
+"
+"I'm using this code to get standard output from an external program:
+>>> from subprocess import *
+>>> command_stdout = Popen(['ls', '-l'], stdout=PIPE).communicate()[0]
+
+The communicate() method returns an array of bytes:
+>>> command_stdout
+b'total 0\n-rw-rw-r-- 1 thomas thomas 0 Mar  3 07:03 file1\n-rw-rw-r-- 1 thomas thomas 0 Mar  3 07:03 file2\n'
+
+However, I'd like to work with the output as a normal Python string. So that I could print it like this:
+>>> print(command_stdout)
+-rw-rw-r-- 1 thomas thomas 0 Mar  3 07:03 file1
+-rw-rw-r-- 1 thomas thomas 0 Mar  3 07:03 file2
+
+I thought that's what the binascii.b2a_qp() method is for, but when I tried it, I got the same byte array again:
+>>> binascii.b2a_qp(command_stdout)
+b'total 0\n-rw-rw-r-- 1 thomas thomas 0 Mar  3 07:03 file1\n-rw-rw-r-- 1 thomas thomas 0 Mar  3 07:03 file2\n'
+
+Does anybody know how to convert the bytes value back to string? I mean, using the ""batteries"" instead of doing it manually. And I'd like it to be ok with Python 3.
+","I think this way is easy:
+bytes = [112, 52, 52]
+"""".join(map(chr, bytes))
+>> p44
+
+"
+"Is there any way to convert an entire user inputted string from uppercase, or even part uppercase to lowercase? 
+E.g. Kilometers --> kilometers.
+","You can do what Peter said, or
+if you want the user to input something you could do this:
+raw_input('Type Something').lower()
+
+It will then automatically convert the thing they typed into lowercase. :)
+Note: raw_input was renamed to input in Python 3.x and above.
+"
+"Requests is a really nice library. I'd like to use it for download big files (>1GB).
+The problem is it's not possible to keep whole file in memory I need to read it in chunks. And this is a problem with the following code
+import requests
+
+def DownloadFile(url)
+    local_filename = url.split('/')[-1]
+    r = requests.get(url)
+    f = open(local_filename, 'wb')
+    for chunk in r.iter_content(chunk_size=512 * 1024): 
+        if chunk: # filter out keep-alive new chunks
+            f.write(chunk)
+    f.close()
+    return 
+
+By some reason it doesn't work this way. It still loads response into memory before save it to a file.
+","I figured out what should be changed. The trick was to set stream = True in the get() method. 
+After this python process stopped to suck memory (stays around 30kb regardless size of the download file). 
+Thank you @danodonovan for you syntax I use it here:
+def download_file(url):
+    local_filename = url.split('/')[-1]
+    # NOTE the stream=True parameter
+    r = requests.get(url, stream=True)
+    with open(local_filename, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024): 
+            if chunk: # filter out keep-alive new chunks
+                f.write(chunk)
+                #f.flush() commented by recommendation from J.F.Sebastian
+    return local_filename
+
+See http://docs.python-requests.org/en/latest/user/advanced/#body-content-workflow for further reference.
+"
+"I'm iterating over a list of tuples in Python, and am attempting to remove them if they meet certain criteria. 
+for tup in somelist:
+    if determine(tup):
+         code_to_remove_tup
+
+What should I use in place of code_to_remove_tup? I can't figure out how to remove the item in this fashion.
+","The official Python 2 tutorial 4.2. ""for Statements"" says:
+
+If you need to modify the sequence you are iterating over while inside the loop (for example to duplicate selected items), it is recommended that you first make a copy. Iterating over a sequence does not implicitly make a copy. The slice notation makes this especially convenient:
+
+>>> for w in words[:]:  # Loop over a slice copy of the entire list.
+...     if len(w) > 6:
+...         words.insert(0, w)
+...
+>>> words
+['defenestrate', 'cat', 'window', 'defenestrate']
+
+which is what was suggested at: http://stackoverflow.com/a/1207427/895245
+The Python 2 documentation 7.3. ""The for statement"" gives the same advice:
+
+Note: There is a subtlety when the sequence is being modified by the loop (this can only occur for mutable sequences, i.e. lists). An internal counter is used to keep track of which item is used next, and this is incremented on each iteration. When this counter has reached the length of the sequence the loop terminates. This means that if the suite deletes the current (or a previous) item from the sequence, the next item will be skipped (since it gets the index of the current item which has already been treated). Likewise, if the suite inserts an item in the sequence before the current item, the current item will be treated again the next time through the loop. This can lead to nasty bugs that can be avoided by making a temporary copy using a slice of the whole sequence, e.g.,
+
+for x in a[:]:
+    if x < 0: a.remove(x)
+
+"
+"Inspired by the question series 'Hidden features of ...', I am curious to hear about your favorite Django tips or lesser known but useful features you know of.
+
+Please, include only one tip per answer.
+Add Django version requirements if there are any.
+
+","Using an 'apps' folder to organize your applications without editing PYTHONPATH
+This has come handy when I want to organize my folders like this:
+apps/
+    foo/
+    bar/
+site/
+settings.py
+urls.py
+
+without overwritting PYTHONPATH or having to add apps to every import like:
+from apps.foo.model import *
+from apps.bar.forms import *
+
+In your settings.py add
+import os
+import sys
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(PROJECT_ROOT, ""apps""))
+
+and you are ready to go :-)
+I saw this at http://codespatter.com/2009/04/10/how-to-add-locations-to-python-path-for-reusable-django-apps/
+"
+"Whats the difference (in language a python/django noob can understand) in a view between render(), render_to_response() and direct_to_template()?
+e.g. from Nathan Borror's basic apps examples
+def comment_edit(request, object_id, template_name='comments/edit.html'):
+    comment = get_object_or_404(Comment, pk=object_id, user=request.user)
+    # ...
+    return render(request, template_name, {
+        'form': form,
+        'comment': comment,
+    })
+
+But I've also seen
+    return render_to_response(template_name, my_data_dictionary,
+              context_instance=RequestContext(request))
+
+And
+    return direct_to_template(request, template_name, my_data_dictionary)
+
+Whats the difference, what to use in any particular situation?
+","Render is
+def render(request, *args, **kwargs):
+    """""" Simple wrapper for render_to_response. """"""
+    kwargs['context_instance'] = RequestContext(request)
+    return render_to_response(*args, **kwargs)
+
+So there is really no difference between render_to_response except it wraps your context making the template pre-processors work.
+Direct to template is a generic view.
+There is really no sense in using it here because there is overhead over render_to_response in the form of view function.
+"
+"The time module can be initialized using seconds since epoch:
+>>> import time
+>>> t1=time.gmtime(1284286794)
+>>> t1
+time.struct_time(tm_year=2010, tm_mon=9, tm_mday=12, tm_hour=10, tm_min=19, 
+                 tm_sec=54, tm_wday=6, tm_yday=255, tm_isdst=0)
+
+Is there an elegant way to initialize a datetime.datetime object in the same way?
+","Seconds since epoch to datetime to strftime:
+>>> ts_epoch = 1362301382
+>>> ts = datetime.datetime.fromtimestamp(ts_epoch).strftime('%Y-%m-%d %H:%M:%S')
+>>> ts
+'2013-03-03 01:03:02'
+
+"
