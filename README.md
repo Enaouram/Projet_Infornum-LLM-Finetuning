@@ -19,10 +19,10 @@ This repository contains resources and results from the fine-tuning of Lightweig
 
 ### Models and Datasets
 - **Fine-tuned Models**: Access our models fine-tuned on SAS and debugging tasks available on Hugging Face:
-  - [Llama Fine-tuned on Debugging]([https://huggingface.co/models](https://huggingface.co/ayman56)) 
-  - [Mistral Fine-tuned on SAS Tasks]([https://huggingface.co/models](https://huggingface.co/ayman56)) 
+  - [Llama Fine-tuned on Debugging](https://huggingface.co/ayman56) 
+  - [Mistral Fine-tuned on SAS Tasks](https://huggingface.co/ayman56) 
 - **Annotated Datasets**: Review the datasets used for fine-tuning:
-  - [Annotated SAS Dataset]([https://huggingface.co/datasets](https://huggingface.co/datasets/MaamarM/SAS_training)) 
+  - [Annotated SAS Dataset](https://huggingface.co/datasets/MaamarM/SAS_training) 
 
 ## Team and Supervision
 
