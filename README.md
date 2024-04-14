@@ -27,9 +27,9 @@ This repository contains resources and results from the fine-tuning of Lightweig
 ## Team and Supervision
 
 ### Team Members:
-- **Ayman Moumen**: [GitHub](https://github.com/Ayman2G)
-- **Marouane Maamar**: [GitHub](https://github.com/Enaouram)
-- **Samer Lahoud**: [GitHub](https://github.com/SameryLahoud)
+- **Ayman Moumen**: [Ayman2G](https://github.com/Ayman2G)
+- **Marouane Maamar**: [Enaouram](https://github.com/Enaouram)
+- **Samer Lahoud**: [SameryLahoud](https://github.com/SameryLahoud)
 
 ### Supervisor:
 - **Thomas Cosyn**: Supervisor from OnePoint
